@@ -124,12 +124,10 @@ export function errorHandler(
   }
 
   if (error instanceof ZodError) {
-    return res
-      .status(400)
-      .json({
-        status: "validation_error",
-        errors: error.flatten().fieldErrors,
-      });
+    return res.status(400).json({
+      status: "validation_error",
+      errors: error.flatten().fieldErrors,
+    });
   }
 
   console.error(error);

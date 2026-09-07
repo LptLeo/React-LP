@@ -75,30 +75,38 @@ Catálogo digital responsivo com fluxo de pedido direto para o WhatsApp, painel 
 
 ## 4. Tech Stack & Arquitetura
 
-| Camada                     | Tecnologia                                                                      |
-| -------------------------- | ------------------------------------------------------------------------------- |
-| **Frontend**               | React.js (Vite) + TypeScript + Tailwind CSS                                     |
-| **Validação & Tipagem**    | Zod + JSDoc (autodocumentação)                                                  |
-| **Backend / API**          | Serverless Functions (Netlify/Vercel) ou Node.js/Express (Render + UptimeRobot) |
-| **Banco de Dados**         | MongoDB Atlas (M0 Free Tier)                                                    |
-| **Armazenamento de Mídia** | Cloudinary API                                                                  |
+| Camada                     | Tecnologia                                              |
+| -------------------------- | ------------------------------------------------------- |
+| **Frontend**               | React.js (Vite) + TypeScript + Tailwind CSS             |
+| **Validação & Tipagem**    | Zod + JSDoc (autodocumentação)                          |
+| **Backend / API**          | Serverless Functions (**Netlify**) — handler Web standard |
+| **Banco de Dados**         | MongoDB Atlas (M0 Free Tier) — Mongoose                 |
+| **Armazenamento de Mídia** | Cloudinary API                                          |
 
 ### Estrutura de Pastas (Frontend)
 
 ```text
+netlify/
+└── functions/           # Serverless Functions (ex: health.ts)
 src/
-├── app/                   # Rotas e Serverless Handlers
-│   ├── (public)/          # Landing Page e rotas abertas
-│   ├── admin/             # Área administrativa protegida (/admin/*)
-│   └── api/               # Serverless Endpoints / Actions
-├── features/              # Módulos independentes por funcionalidade
+├── app/                 # Rotas e páginas da aplicação
+│   ├── (public)/        # Landing Page e rotas abertas
+│   ├── admin/           # Área administrativa protegida (/admin/*)
+│   └── api/             # Handlers/Serverless Endpoints
+├── features/            # Módulos independentes por funcionalidade
 │   ├── [feature]/
-│   │   ├── components/    # Componentes de interface do domínio
-│   │   ├── services/      # Chamadas de API e utilitários da feature
-│   │   ├── hooks/         # Custom hooks do domínio
-│   │   └── schemas/       # Validações Zod para formulários
-├── shared/                # Componentes neutros de UI (Button, Input, Modal)
-└── middleware.ts          # Proteção serverless de rotas (/admin/*)
+│   │   ├── components/  # Componentes de interface do domínio
+│   │   ├── services/    # Chamadas de API e utilitários da feature
+│   │   ├── hooks/       # Custom hooks do domínio
+│   │   └── schemas/     # Validações Zod para formulários
+├── shared/              # Código reutilizável (UI, config, database, cloudinary, errors)
+│   ├── components/      # Componentes neutros de UI (Button, Input, Modal)
+│   ├── config/          # env.ts (validação Zod das variáveis de ambiente)
+│   ├── database/        # mongo.ts (conexão Mongoose)
+│   ├── cloudinary/      # upload/delete de mídias
+│   ├── errors/          # AppError e errorHandler
+│   └── styles/          # tokens.css (design tokens)
+└── middleware.ts         # Proteção serverless de rotas (/admin/*)
 ```
 
 ---
@@ -143,6 +151,17 @@ npm run build
 npm run preview
 ```
 
+### Execução Local com Serverless Functions (Netlify)
+
+As Serverless Functions ficam em `netlify/functions/` e usam Node **20** (definido em `.nvmrc` e `netlify.toml`). Para testá-las localmente, instale a CLI e rode:
+
+```bash
+npm install -g netlify-cli
+netlify dev
+```
+
+A function de health check fica disponível em `http://localhost:8888/.netlify/functions/health` e valida a conexão com o MongoDB.
+
 ### Convenção de Commits e Workflow Git
 
 Este projeto utiliza **Conventional Commits** validados automaticamente via Husky e Commitlint.
@@ -154,9 +173,12 @@ Este projeto utiliza **Conventional Commits** validados automaticamente via Husk
 
 ## Scripts Disponíveis
 
-| Comando           | Descrição                                         |
-| ----------------- | ------------------------------------------------- |
-| `npm run dev`     | Inicia o servidor de desenvolvimento (Vite).      |
-| `npm run build`   | Compila o TypeScript e gera o bundle de produção. |
-| `npm run lint`    | Executa o ESLint no projeto.                      |
-| `npm run preview` | Serve localmente o bundle de produção gerado.     |
+| Comando             | Descrição                                        |
+| ------------------- | ------------------------------------------------ |
+| `npm run dev`       | Inicia o servidor de desenvolvimento (Vite).     |
+| `npm run build`     | Compila o TypeScript e gera o bundle de produção. |
+| `npm run lint`      | Executa o ESLint no projeto.                     |
+| `npm run lint:fix`  | Executa o ESLint corrigindo problemas.           |
+| `npm run format`    | Formata o código com Prettier.                   |
+| `npm run format:check` | Verifica a formatação sem alterar arquivos.   |
+| `npm run preview`   | Serve localmente o bundle de produção gerado.     |
