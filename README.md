@@ -8,9 +8,9 @@ Catálogo digital responsivo com fluxo de pedido direto para o WhatsApp, painel 
 
 ### Proposta de Valor
 
-| Público | Benefício |
-| --- | --- |
-| **Cliente** | Navegação rápida em catálogo responsivo, busca em tempo real, seleção de itens e envio de pedido formatado direto para o WhatsApp do vendedor. |
+| Público      | Benefício                                                                                                                                                |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Cliente**  | Navegação rápida em catálogo responsivo, busca em tempo real, seleção de itens e envio de pedido formatado direto para o WhatsApp do vendedor.           |
 | **Vendedor** | Painel administrativo (`/admin`) para gestão de produtos, estoque, fotos e conteúdos, sem depender de suporte técnico ou custos fixos de infraestrutura. |
 
 ---
@@ -39,49 +39,49 @@ Catálogo digital responsivo com fluxo de pedido direto para o WhatsApp, painel 
 
 ### Product
 
-| Campo | Tipo | Descrição |
-| --- | --- | --- |
-| `id` | `string` | Identificador único do produto. |
-| `title` | `string` | Título do produto. |
-| `description` | `string` | Descrição detalhada do produto. |
-| `price` | `number` | Preço do produto em reais. |
-| `imageUrl` | `string` | URL da imagem hospedada no Cloudinary. |
-| `quantity` | `number` | Quantidade disponível em estoque. |
-| `isFeatured` | `boolean` | Define se o produto aparece em destaque (carrossel). |
-| `isActive` | `boolean` | Define se o produto está ativo/visível no catálogo. |
-| `createdAt` | `Date` | Data de criação do registro. |
+| Campo         | Tipo      | Descrição                                            |
+| ------------- | --------- | ---------------------------------------------------- |
+| `id`          | `string`  | Identificador único do produto.                      |
+| `title`       | `string`  | Título do produto.                                   |
+| `description` | `string`  | Descrição detalhada do produto.                      |
+| `price`       | `number`  | Preço do produto em reais.                           |
+| `imageUrl`    | `string`  | URL da imagem hospedada no Cloudinary.               |
+| `quantity`    | `number`  | Quantidade disponível em estoque.                    |
+| `isFeatured`  | `boolean` | Define se o produto aparece em destaque (carrossel). |
+| `isActive`    | `boolean` | Define se o produto está ativo/visível no catálogo.  |
+| `createdAt`   | `Date`    | Data de criação do registro.                         |
 
 ### LandingText
 
-| Campo | Tipo | Descrição |
-| --- | --- | --- |
-| `id` | `string` | Identificador único do conteúdo. |
+| Campo        | Tipo     | Descrição                                                            |
+| ------------ | -------- | -------------------------------------------------------------------- |
+| `id`         | `string` | Identificador único do conteúdo.                                     |
 | `sectionKey` | `string` | Chave que identifica a seção da página (ex: `hero`, `faq`, `about`). |
-| `title` | `string` | Título do conteúdo exibido na seção. |
-| `content` | `string` | Corpo do conteúdo (texto institucional ou pergunta/resposta do FAQ). |
+| `title`      | `string` | Título do conteúdo exibido na seção.                                 |
+| `content`    | `string` | Corpo do conteúdo (texto institucional ou pergunta/resposta do FAQ). |
 
 ### ContactInfo
 
-| Campo | Tipo | Descrição |
-| --- | --- | --- |
-| `id` | `string` | Identificador único do registro. |
-| `phone` | `string` | Telefone/WhatsApp do vendedor (com DDI e DDD). |
-| `email` | `string` | E-mail de contato. |
-| `instagram` | `string` | Handle do Instagram. |
-| `facebook` | `string` | URL ou handle do Facebook. |
+| Campo                     | Tipo     | Descrição                                            |
+| ------------------------- | -------- | ---------------------------------------------------- |
+| `id`                      | `string` | Identificador único do registro.                     |
+| `phone`                   | `string` | Telefone/WhatsApp do vendedor (com DDI e DDD).       |
+| `email`                   | `string` | E-mail de contato.                                   |
+| `instagram`               | `string` | Handle do Instagram.                                 |
+| `facebook`                | `string` | URL ou handle do Facebook.                           |
 | `whatsappMessageTemplate` | `string` | Template da mensagem de pedido enviada via WhatsApp. |
 
 ---
 
 ## 4. Tech Stack & Arquitetura
 
-| Camada | Tecnologia |
-| --- | --- |
-| **Frontend** | React.js (Vite) + TypeScript + Tailwind CSS |
-| **Validação & Tipagem** | Zod + JSDoc (autodocumentação) |
-| **Backend / API** | Serverless Functions (Netlify/Vercel) ou Node.js/Express (Render + UptimeRobot) |
-| **Banco de Dados** | MongoDB Atlas (M0 Free Tier) |
-| **Armazenamento de Mídia** | Cloudinary API |
+| Camada                     | Tecnologia                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| **Frontend**               | React.js (Vite) + TypeScript + Tailwind CSS                                     |
+| **Validação & Tipagem**    | Zod + JSDoc (autodocumentação)                                                  |
+| **Backend / API**          | Serverless Functions (Netlify/Vercel) ou Node.js/Express (Render + UptimeRobot) |
+| **Banco de Dados**         | MongoDB Atlas (M0 Free Tier)                                                    |
+| **Armazenamento de Mídia** | Cloudinary API                                                                  |
 
 ### Estrutura de Pastas (Frontend)
 
@@ -146,6 +146,7 @@ npm run preview
 ### Convenção de Commits e Workflow Git
 
 Este projeto utiliza **Conventional Commits** validados automaticamente via Husky e Commitlint.
+
 - **Mensagens de Commit:** Devem seguir o formato `tipo(escopo): descrição` (ex: `feat(admin): cria tela de login`).
 - **Branches:** As alterações devem ser feitas em branches isoladas com a nomenclatura `tipo/numero-issue-descricao` (ex: `feat/1-setup-inicial`).
 
@@ -153,9 +154,9 @@ Este projeto utiliza **Conventional Commits** validados automaticamente via Husk
 
 ## Scripts Disponíveis
 
-| Comando | Descrição |
-| --- | --- |
-| `npm run dev` | Inicia o servidor de desenvolvimento (Vite). |
-| `npm run build` | Compila o TypeScript e gera o bundle de produção. |
-| `npm run lint` | Executa o ESLint no projeto. |
-| `npm run preview` | Serve localmente o bundle de produção gerado. |
+| Comando           | Descrição                                         |
+| ----------------- | ------------------------------------------------- |
+| `npm run dev`     | Inicia o servidor de desenvolvimento (Vite).      |
+| `npm run build`   | Compila o TypeScript e gera o bundle de produção. |
+| `npm run lint`    | Executa o ESLint no projeto.                      |
+| `npm run preview` | Serve localmente o bundle de produção gerado.     |
