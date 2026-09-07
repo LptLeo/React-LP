@@ -75,13 +75,13 @@ Catálogo digital responsivo com fluxo de pedido direto para o WhatsApp, painel 
 
 ## 4. Tech Stack & Arquitetura
 
-| Camada                     | Tecnologia                                              |
-| -------------------------- | ------------------------------------------------------- |
-| **Frontend**               | React.js (Vite) + TypeScript + Tailwind CSS             |
-| **Validação & Tipagem**    | Zod + JSDoc (autodocumentação)                          |
+| Camada                     | Tecnologia                                                |
+| -------------------------- | --------------------------------------------------------- |
+| **Frontend**               | React.js (Vite) + TypeScript + Tailwind CSS               |
+| **Validação & Tipagem**    | Zod + JSDoc (autodocumentação)                            |
 | **Backend / API**          | Serverless Functions (**Netlify**) — handler Web standard |
-| **Banco de Dados**         | MongoDB Atlas (M0 Free Tier) — Mongoose                 |
-| **Armazenamento de Mídia** | Cloudinary API                                          |
+| **Banco de Dados**         | MongoDB Atlas (M0 Free Tier) — Mongoose                   |
+| **Armazenamento de Mídia** | Cloudinary API                                            |
 
 ### Estrutura de Pastas (Frontend)
 
@@ -151,6 +151,22 @@ npm run build
 npm run preview
 ```
 
+### Banco de Dados Local (Docker)
+
+Para desenvolvimento sem depender do MongoDB Atlas, suba um MongoDB via Docker Compose:
+
+```bash
+docker compose up -d
+```
+
+O container `catalogo-mongo` fica disponível em `mongodb://localhost:27017`. Defina no `.env`:
+
+```env
+MONGODB_URI=mongodb://localhost:27017/catalogo
+```
+
+O Mongoose cria o banco `catalogo` automaticamente na primeira conexão. Para derrubar: `docker compose down` (mantém os dados por causa do volume `mongo-data`).
+
 ### Execução Local com Serverless Functions (Netlify)
 
 As Serverless Functions ficam em `netlify/functions/` e usam Node **20** (definido em `.nvmrc` e `netlify.toml`). Para testá-las localmente, instale a CLI e rode:
@@ -173,12 +189,12 @@ Este projeto utiliza **Conventional Commits** validados automaticamente via Husk
 
 ## Scripts Disponíveis
 
-| Comando             | Descrição                                        |
-| ------------------- | ------------------------------------------------ |
-| `npm run dev`       | Inicia o servidor de desenvolvimento (Vite).     |
-| `npm run build`     | Compila o TypeScript e gera o bundle de produção. |
-| `npm run lint`      | Executa o ESLint no projeto.                     |
-| `npm run lint:fix`  | Executa o ESLint corrigindo problemas.           |
-| `npm run format`    | Formata o código com Prettier.                   |
-| `npm run format:check` | Verifica a formatação sem alterar arquivos.   |
-| `npm run preview`   | Serve localmente o bundle de produção gerado.     |
+| Comando                | Descrição                                         |
+| ---------------------- | ------------------------------------------------- |
+| `npm run dev`          | Inicia o servidor de desenvolvimento (Vite).      |
+| `npm run build`        | Compila o TypeScript e gera o bundle de produção. |
+| `npm run lint`         | Executa o ESLint no projeto.                      |
+| `npm run lint:fix`     | Executa o ESLint corrigindo problemas.            |
+| `npm run format`       | Formata o código com Prettier.                    |
+| `npm run format:check` | Verifica a formatação sem alterar arquivos.       |
+| `npm run preview`      | Serve localmente o bundle de produção gerado.     |
