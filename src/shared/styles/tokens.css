@@ -1,0 +1,44 @@
+/**
+ * Design tokens semânticos do projeto.
+ *
+ * As variáveis definidas no bloco `@theme` são expostas pelo Tailwind v4
+ * como CSS custom properties em `:root` e geram utilitárias (ex: `bg-primary`,
+ * `text-text`, `shadow-md`, `rounded-md`, `font-display`).
+ *
+ * Regras:
+ * - Nunca usar hex solto ou "magic number" em componentes — referencie os tokens.
+ * - Espaçamentos (`--space-*`) e demais tokens também estão disponíveis via `var()`.
+ */
+@theme {
+  /* Cores semânticas */
+  --color-primary: #1a73e8;
+  --color-secondary: #5f6368;
+  --color-surface: #ffffff;
+  --color-background: #f8f9fa;
+  --color-text: #202124;
+  --color-danger: #d93025;
+  --color-success: #188038;
+  --color-warning: #f9ab00;
+
+  /* Espaçamento (escala 4/8/16/24/48/96) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 48px;
+  --space-6: 96px;
+
+  /* Raios de borda */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Tipografia (máx. 2 famílias) */
+  --font-display: "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 2px rgb(32 33 36 / 8%);
+  --shadow-md: 0 4px 12px rgb(32 33 36 / 10%);
+  --shadow-lg: 0 12px 32px rgb(32 33 36 / 14%);
+}
