@@ -1,0 +1,161 @@
+# Catálogo Digital & E-commerce integrado ao WhatsApp
+
+Catálogo digital responsivo com fluxo de pedido direto para o WhatsApp, painel administrativo para gestão de produtos, estoque, fotos e conteúdos — sem custos fixos de infraestrutura e sem depender de suporte técnico.
+
+---
+
+## 1. Visão Geral do Projeto
+
+### Proposta de Valor
+
+| Público | Benefício |
+| --- | --- |
+| **Cliente** | Navegação rápida em catálogo responsivo, busca em tempo real, seleção de itens e envio de pedido formatado direto para o WhatsApp do vendedor. |
+| **Vendedor** | Painel administrativo (`/admin`) para gestão de produtos, estoque, fotos e conteúdos, sem depender de suporte técnico ou custos fixos de infraestrutura. |
+
+---
+
+## 2. Requisitos Funcionais
+
+### Área Pública (Landing Page)
+
+- **Hero Banner** com CTA de navegação.
+- **Produtos em Destaque** exibidos em carrossel.
+- **Catálogo em Grade** com busca/filtro em tempo real.
+- **Fluxo de pedido dinâmico** via WhatsApp (seleção de itens + mensagem formatada).
+- **Seção de FAQ** interativa e links de contato/redes sociais.
+- **Botão "Recomendar Produto"**.
+
+### Área Administrativa (`/admin`)
+
+- **Tela de login** com autenticação.
+- **CRUD de Produtos**: título, descrição, preço, quantidade, status ativo/destaque e upload de imagem via Cloudinary.
+- **Gestão de Conteúdo**: edição de textos institucionais e perguntas do FAQ.
+- **Configuração de Dados de Contato**: telefone, e-mail, template da mensagem do WhatsApp e redes sociais.
+
+---
+
+## 3. Modelo Conceitual de Dados
+
+### Product
+
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| `id` | `string` | Identificador único do produto. |
+| `title` | `string` | Título do produto. |
+| `description` | `string` | Descrição detalhada do produto. |
+| `price` | `number` | Preço do produto em reais. |
+| `imageUrl` | `string` | URL da imagem hospedada no Cloudinary. |
+| `quantity` | `number` | Quantidade disponível em estoque. |
+| `isFeatured` | `boolean` | Define se o produto aparece em destaque (carrossel). |
+| `isActive` | `boolean` | Define se o produto está ativo/visível no catálogo. |
+| `createdAt` | `Date` | Data de criação do registro. |
+
+### LandingText
+
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| `id` | `string` | Identificador único do conteúdo. |
+| `sectionKey` | `string` | Chave que identifica a seção da página (ex: `hero`, `faq`, `about`). |
+| `title` | `string` | Título do conteúdo exibido na seção. |
+| `content` | `string` | Corpo do conteúdo (texto institucional ou pergunta/resposta do FAQ). |
+
+### ContactInfo
+
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| `id` | `string` | Identificador único do registro. |
+| `phone` | `string` | Telefone/WhatsApp do vendedor (com DDI e DDD). |
+| `email` | `string` | E-mail de contato. |
+| `instagram` | `string` | Handle do Instagram. |
+| `facebook` | `string` | URL ou handle do Facebook. |
+| `whatsappMessageTemplate` | `string` | Template da mensagem de pedido enviada via WhatsApp. |
+
+---
+
+## 4. Tech Stack & Arquitetura
+
+| Camada | Tecnologia |
+| --- | --- |
+| **Frontend** | React.js (Vite) + TypeScript + Tailwind CSS |
+| **Validação & Tipagem** | Zod + JSDoc (autodocumentação) |
+| **Backend / API** | Serverless Functions (Netlify/Vercel) ou Node.js/Express (Render + UptimeRobot) |
+| **Banco de Dados** | MongoDB Atlas (M0 Free Tier) |
+| **Armazenamento de Mídia** | Cloudinary API |
+
+### Estrutura de Pastas (Frontend)
+
+```text
+src/
+├── app/                   # Rotas e Serverless Handlers
+│   ├── (public)/          # Landing Page e rotas abertas
+│   ├── admin/             # Área administrativa protegida (/admin/*)
+│   └── api/               # Serverless Endpoints / Actions
+├── features/              # Módulos independentes por funcionalidade
+│   ├── [feature]/
+│   │   ├── components/    # Componentes de interface do domínio
+│   │   ├── services/      # Chamadas de API e utilitários da feature
+│   │   ├── hooks/         # Custom hooks do domínio
+│   │   └── schemas/       # Validações Zod para formulários
+├── shared/                # Componentes neutros de UI (Button, Input, Modal)
+└── middleware.ts          # Proteção serverless de rotas (/admin/*)
+```
+
+---
+
+## 5. Guia de Instalação e Execução Local
+
+### Pré-requisitos
+
+- **Node.js 18+** (recomendado: última versão LTS).
+- Contas gratuitas para os serviços externos:
+  - [MongoDB Atlas](https://www.mongodb.com/atlas) (M0 Free Tier) — string de conexão.
+  - [Cloudinary](https://cloudinary.com/) — Cloud Name, API Key e API Secret.
+
+### Instalação de Dependências
+
+```bash
+npm install
+```
+
+### Variáveis de Ambiente
+
+Copie o arquivo modelo e preencha com suas credenciais:
+
+```bash
+cp .env.example .env
+```
+
+> **Importante:** nunca commite o arquivo `.env`. Ele já está ignorado pelo `.gitignore`.
+
+### Execução em Desenvolvimento
+
+```bash
+npm run dev
+```
+
+O servidor de desenvolvimento será iniciado e o endereço local será exibido no terminal (padrão `http://localhost:5173`).
+
+### Build de Produção
+
+```bash
+npm run build
+npm run preview
+```
+
+### Convenção de Commits e Workflow Git
+
+Este projeto utiliza **Conventional Commits** validados automaticamente via Husky e Commitlint.
+- **Mensagens de Commit:** Devem seguir o formato `tipo(escopo): descrição` (ex: `feat(admin): cria tela de login`).
+- **Branches:** As alterações devem ser feitas em branches isoladas com a nomenclatura `tipo/numero-issue-descricao` (ex: `feat/1-setup-inicial`).
+
+---
+
+## Scripts Disponíveis
+
+| Comando | Descrição |
+| --- | --- |
+| `npm run dev` | Inicia o servidor de desenvolvimento (Vite). |
+| `npm run build` | Compila o TypeScript e gera o bundle de produção. |
+| `npm run lint` | Executa o ESLint no projeto. |
+| `npm run preview` | Serve localmente o bundle de produção gerado. |
