@@ -8,10 +8,15 @@ import { Schema, model, type Model } from "mongoose";
 import type { LandingTextDTO } from "../dto/landing-text.dto";
 
 export interface LandingTextDocument extends LandingTextDTO {
+  /** Data de criação do registro. */
   createdAt: Date;
+  /** Data da última atualização do registro. */
   updatedAt: Date;
 }
 
+/**
+ * Schema Mongoose do conteúdo da landing page.
+ */
 const landingTextSchema = new Schema<LandingTextDocument>(
   {
     heroTitle: {
@@ -48,5 +53,10 @@ const landingTextSchema = new Schema<LandingTextDocument>(
   { timestamps: true, versionKey: false },
 );
 
+/**
+ * Modelo registrado da coleção `landingtexts`.
+ *
+ * Utilizado pelo módulo de Conteúdo; mantém um único documento (singleton).
+ */
 export const LandingTextModel: Model<LandingTextDocument> =
   model<LandingTextDocument>("LandingText", landingTextSchema);

@@ -7,10 +7,15 @@ import { Schema, model, type Model } from "mongoose";
 import type { ContactInfoDTO } from "../dto/contact-info.dto";
 
 export interface ContactInfoDocument extends ContactInfoDTO {
+  /** Data de criação do registro. */
   createdAt: Date;
+  /** Data da última atualização do registro. */
   updatedAt: Date;
 }
 
+/**
+ * Schema Mongoose das informações de contato.
+ */
 const contactInfoSchema = new Schema<ContactInfoDocument>(
   {
     whatsappPhone: {
@@ -40,5 +45,10 @@ const contactInfoSchema = new Schema<ContactInfoDocument>(
   { timestamps: true, versionKey: false },
 );
 
+/**
+ * Modelo registrado da coleção `contactinfos`.
+ *
+ * Utilizado pelo módulo de Contato; mantém um único documento (singleton).
+ */
 export const ContactInfoModel: Model<ContactInfoDocument> =
   model<ContactInfoDocument>("ContactInfo", contactInfoSchema);

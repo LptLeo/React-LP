@@ -178,6 +178,8 @@ netlify dev
 
 A function de health check fica disponível em `http://localhost:8888/.netlify/functions/health` e valida a conexão com o MongoDB.
 
+A especificação **OpenAPI** da API é gerada automaticamente a partir dos DTOs Zod (`npm run docs:api`) em `docs/openapi.json`.
+
 ### Convenção de Commits e Workflow Git
 
 Este projeto utiliza **Conventional Commits** validados automaticamente via Husky e Commitlint.
@@ -197,4 +199,7 @@ Este projeto utiliza **Conventional Commits** validados automaticamente via Husk
 | `npm run lint:fix`     | Executa o ESLint corrigindo problemas.            |
 | `npm run format`       | Formata o código com Prettier.                    |
 | `npm run format:check` | Verifica a formatação sem alterar arquivos.       |
+| `npm run test`         | Executa os testes unitários (Vitest).             |
+| `npm run test:watch`   | Executa os testes em modo watch.                  |
+| `npm run docs:api`     | Gera `docs/openapi.json` a partir dos DTOs Zod.   |
 | `npm run preview`      | Serve localmente o bundle de produção gerado.     |
