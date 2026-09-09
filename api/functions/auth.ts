@@ -14,28 +14,21 @@ import {
 } from "../../src/modules/auth/services/auth.service";
 import { connectDatabase } from "../../src/shared/database/mongo";
 import { errorHandler } from "../../src/shared/errors/errorHandler";
+import {
+  methodNotAllowed,
+  readJsonBody,
+} from "../../src/shared/serverless/http";
 
 export default async (request: Request): Promise<Response> => {
   try {
     if (request.method !== "POST") {
-      return Response.json(
-        { status: "error", message: "Método não permitido" },
-        { status: 405 },
-      );
+      return methodNotAllowed();
     }
 
     await connectDatabase();
     await ensureAdmin();
 
-    let body: unknown;
-    try {
-      body = await request.json();
-    } catch {
-      return Response.json(
-        { status: "error", message: "Body JSON inválido" },
-        { status: 400 },
-      );
-    }
+    const body = await readJsonBody(request);
 
     const parsed = loginSchema.safeParse(body);
     if (!parsed.success) {
