@@ -30,6 +30,11 @@
   to = "/.netlify/functions/admins"
   status = 200
 
+[[redirects]]
+  from = "/api/content*"
+  to = "/.netlify/functions/content"
+  status = 200
+
 # Redireciona rotas SPA (ex: /admin) para o index.html
 [[redirects]]
   from = "/*"
