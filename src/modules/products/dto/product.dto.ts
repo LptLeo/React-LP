@@ -48,7 +48,57 @@ export const createProductSchema = productSchema;
 /* Schema de atualização — todos os campos opcionais (envio parcial). */
 export const updateProductSchema = productSchema.partial();
 
+/* Query de listagem pública (paginação, busca e filtros do catálogo). */
+export const productListQuerySchema = z
+  .object({
+    page: z.coerce
+      .number()
+      .int("Página deve ser um número inteiro")
+      .positive("Página deve ser maior que zero")
+      .default(1)
+      .describe("Número da página, iniciando em 1"),
+    limit: z.coerce
+      .number()
+      .int("Limite deve ser um número inteiro")
+      .positive("Limite deve ser maior que zero")
+      .max(50, "Limite máximo de 50 itens por página")
+      .default(10)
+      .describe("Quantidade de itens por página (máx. 50)"),
+    search: z
+      .string()
+      .trim()
+      .min(1, "Busca vazia não é permitida")
+      .optional()
+      .describe("Busca case-insensitive por título ou categoria"),
+    category: z
+      .string()
+      .trim()
+      .min(1, "Categoria vazia não é permitida")
+      .optional()
+      .describe("Filtro por categoria exata"),
+    featured: z
+      .enum(["true", "false"])
+      .transform((value) => value === "true")
+      .optional()
+      .describe("Filtra apenas produtos em destaque (true/false)"),
+    active: z
+      .enum(["true", "false"])
+      .transform((value) => value === "true")
+      .optional()
+      .describe("Filtra por visibilidade pública (padrão: true)"),
+  })
+  .describe("Parâmetros de listagem de produtos (paginação, busca e filtros)");
+
+/* Parâmetro de rota com o ID do produto. */
+export const productIdParamsSchema = z
+  .object({
+    id: z.string().min(1, "ID do produto é obrigatório"),
+  })
+  .describe("Identificador do produto (ObjectId do MongoDB)");
+
 export type ProductDTO = z.infer<typeof productSchema>;
 export type ProductImageDTO = z.infer<typeof productImageSchema>;
 export type CreateProductDTO = z.infer<typeof createProductSchema>;
 export type UpdateProductDTO = z.infer<typeof updateProductSchema>;
+export type ProductListQueryDTO = z.infer<typeof productListQuerySchema>;
+export type ProductIdParamsDTO = z.infer<typeof productIdParamsSchema>;

@@ -20,6 +20,23 @@ export interface ProductDocument extends ProductDTO {
 }
 
 /**
+ * Sub-schema da imagem do produto (Cloudinary), sem `_id` próprio.
+ */
+const productImageSchema = new Schema(
+  {
+    publicId: {
+      type: String,
+      required: [true, "publicId da imagem é obrigatório"],
+    },
+    url: {
+      type: String,
+      required: [true, "URL da imagem é obrigatória"],
+    },
+  },
+  { _id: false },
+);
+
+/**
  * Schema Mongoose da coleção de produtos.
  */
 const productSchema = new Schema<ProductDocument>(
@@ -36,11 +53,7 @@ const productSchema = new Schema<ProductDocument>(
     },
     price: { type: Number, required: [true, "Preço é obrigatório"], min: 0.01 },
     priceOriginal: { type: Number, min: 0.01 },
-    image: {
-      _id: false,
-      publicId: { type: String, required: true },
-      url: { type: String, required: true },
-    },
+    image: { type: productImageSchema, required: false },
     category: {
       type: String,
       required: [true, "Categoria é obrigatória"],
