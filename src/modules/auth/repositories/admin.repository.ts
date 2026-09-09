@@ -1,9 +1,12 @@
 /**
  * Repositório de acesso aos dados do administrador.
  */
-import { AppError } from "../../../shared/errors/AppError";
 import { type HydratedDocument } from "mongoose";
-import { AdminModel, type AdminDocument } from "../model/admin.model";
+import {
+  AdminModel,
+  type AdminDocument,
+  type AdminRole,
+} from "../model/admin.model";
 
 /**
  * Busca um administrador pelo e-mail no repositório.
@@ -18,33 +21,22 @@ export async function findByEmail(
 }
 
 /**
- * Insere ou atualiza o administrador (seed idempotente) a partir do `.env`.
+ * Persiste um novo administrador (seed único do `.env`).
  *
- * Se o e-mail já existir, apenas o hash de senha é atualizado.
+ * O upsert foi substituído por insert puro: um admin já existente **nunca** é
+ * sobrescrito (remove o backdoor de redefinição de senha via variável de
+ * ambiente depois da primeira inicialização).
  *
  * @param email - E-mail do administrador.
  * @param passwordHash - Hash bcrypt da senha.
+ * @param role - Papel do administrador (o seed nasce como `owner`).
  * @returns Documento do administrador persistido.
  * @throws AppError - Caso a persistência falhe (status 500).
  */
-export async function upsertAdmin(
+export async function createAdmin(
   email: string,
   passwordHash: string,
+  role: AdminRole = "owner",
 ): Promise<HydratedDocument<AdminDocument>> {
-  const admin = await AdminModel.findOneAndUpdate(
-    { email: email.toLowerCase() },
-    { email, passwordHash },
-    {
-      upsert: true,
-      returnDocument: "after",
-      runValidators: true,
-      setDefaultsOnInsert: true,
-    },
-  );
-
-  if (!admin) {
-    throw new AppError("Não foi possível persistir o administrador.", 500);
-  }
-
-  return admin;
+  return AdminModel.create({ email, passwordHash, role });
 }

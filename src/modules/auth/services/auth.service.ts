@@ -1,7 +1,7 @@
 /**
  * Regras de negócio do módulo de Autenticação.
  *
- * Lida com o seed do administrador (idempotente) e o login com emissão de JWT.
+ * Lida com o seed do administrador (condicional) e o login com emissão de JWT.
  */
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -10,7 +10,7 @@ import { env } from "../../../shared/config/env";
 import { AppError } from "../../../shared/errors/AppError";
 import type { LoginDTO } from "../dto/login.dto";
 import type { AdminDocument } from "../model/admin.model";
-import { findByEmail, upsertAdmin } from "../repositories/admin.repository";
+import { createAdmin, findByEmail } from "../repositories/admin.repository";
 
 const SALT_ROUNDS = 10;
 const JWT_EXPIRES_IN = "7d";
@@ -18,14 +18,21 @@ const JWT_EXPIRES_IN = "7d";
 /**
  * Garante a existência do administrador definido nas variáveis de ambiente.
  *
- * Seed idempotente: se o e-mail já existir, apenas o hash de senha é atualizado.
+ * Seed **condicional**: se o e-mail já existir, o registro é devolvido
+ * intacto (nunca sobrescreve o hash). O primeiro admin do `.env` nasce com
+ * papel `owner`; administradores adicionais são criados via `/api/admins`.
  *
- * @returns Documento do administrador persistido.
- * @throws AppError - Caso a persistência falhe (status 500).
+ * @returns Documento do administrador persistido (existente ou recém-criado).
  */
 export async function ensureAdmin(): Promise<HydratedDocument<AdminDocument>> {
+  const existing = await findByEmail(env.ADMIN_EMAIL);
+
+  if (existing) {
+    return existing;
+  }
+
   const passwordHash = await bcrypt.hash(env.ADMIN_PASSWORD, SALT_ROUNDS);
-  return upsertAdmin(env.ADMIN_EMAIL, passwordHash);
+  return createAdmin(env.ADMIN_EMAIL, passwordHash);
 }
 
 /**
@@ -33,12 +40,13 @@ export async function ensureAdmin(): Promise<HydratedDocument<AdminDocument>> {
  *
  * @param input - Credenciais `{ email, password }` já validadas na borda (Zod).
  * @returns Objeto com o token JWT assinado (expiração de 7 dias).
- * @throws AppError - Se as credenciais forem inválidas (status 401).
+ * @throws AppError - Credenciais inválidas ou conta desativada (status 401).
  */
 export async function login(input: LoginDTO): Promise<{ token: string }> {
   const admin = await findByEmail(input.email);
 
-  if (!admin) {
+  // Mensagem genérica evita revelar a existência de contas desativadas.
+  if (!admin || admin.active === false) {
     throw new AppError("Credenciais inválidas.", 401);
   }
 

@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { env } from "../../../shared/config/env";
 import { AppError } from "../../../shared/errors/AppError";
+import { AdminModel } from "../model/admin.model";
 import { ensureAdmin, login } from "./auth.service";
 
 describe("auth.service", () => {
@@ -45,14 +46,15 @@ describe("auth.service", () => {
     expect(matches).toBe(true);
   });
 
-  it("é idempotente (não duplica o admin)", async () => {
-    await ensureAdmin();
-    await ensureAdmin();
+  it("é idempotente e não re-hashia o admin existente (seed condicional)", async () => {
+    const first = await ensureAdmin();
+    const second = await ensureAdmin();
 
     const count = await mongoose.connection
       .collection("admins")
       .countDocuments();
     expect(count).toBe(1);
+    expect(second.passwordHash).toBe(first.passwordHash);
   });
 
   it("retorna token com credenciais válidas", async () => {
@@ -73,5 +75,14 @@ describe("auth.service", () => {
     await expect(
       login({ email: env.ADMIN_EMAIL, password: "senha-incorreta" }),
     ).rejects.toThrow(AppError);
+  });
+
+  it("rejeita login de administrador desativado", async () => {
+    await ensureAdmin();
+    await AdminModel.updateOne({ email: env.ADMIN_EMAIL }, { active: false });
+
+    await expect(
+      login({ email: env.ADMIN_EMAIL, password: env.ADMIN_PASSWORD }),
+    ).rejects.toMatchObject({ statusCode: 401 });
   });
 });
