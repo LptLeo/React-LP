@@ -1,10 +1,10 @@
 /**
  * Serverless Function — Autenticação.
  *
- * Exposta em `/.netlify/functions/auth` (POST). Autentica o administrador com
- * validação Zod e devolve o token JWT.
+ * Mapeada para `POST /api/auth/login`. Autentica o administrador com validação
+ * Zod e devolve o token JWT.
  *
- * @param request - Request HTTP da Netlify Functions.
+ * @param request - Request HTTP Web standard (Netlify Functions).
  * @returns `Response` JSON com o token JWT ou erro estruturado.
  */
 import { loginSchema } from "../../src/modules/auth/dto/login.dto";

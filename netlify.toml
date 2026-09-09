@@ -5,6 +5,21 @@
 [build.environment]
   NODE_VERSION = "20"
 
+[functions]
+  directory = "api/functions"
+  node_bundler = "esbuild"
+
+# Rotas da API — proxy para as Serverless Functions (funciona em dev e produção)
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/health"
+  status = 200
+
+[[redirects]]
+  from = "/api/auth/login"
+  to = "/.netlify/functions/auth"
+  status = 200
+
 # Redireciona rotas SPA (ex: /admin) para o index.html
 [[redirects]]
   from = "/*"

@@ -1,8 +1,8 @@
 /**
  * Serverless Function — Health Check.
  *
- * Exposta em `/.netlify/functions/health`. Valida o carregamento de variáveis
- * de ambiente e a conexão com o MongoDB, retornando o status da API.
+ * Mapeada para `GET /api/health`. Valida o carregamento de variáveis de
+ * ambiente e a conexão com o MongoDB, retornando o status da API.
  *
  * @returns `Response` JSON com o status do serviço.
  */
