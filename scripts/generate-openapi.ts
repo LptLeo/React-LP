@@ -316,16 +316,28 @@ const document = {
       get: {
         tags: ["Content"],
         summary: "Recupera os textos institucionais da landing",
-        responses: { 200: { description: "Conteúdo da landing" } },
+        responses: {
+          200: {
+            description: "Conteúdo institucional cadastrado",
+            content: jsonContent("LandingText"),
+          },
+          404: errorResponse(),
+          405: errorResponse(),
+        },
       },
       put: {
         tags: ["Content"],
-        summary: "Atualiza os textos institucionais (admin)",
+        summary: "Cria ou atualiza os textos institucionais (admin)",
         security: [{ bearerAuth: [] }],
         requestBody: { required: true, content: jsonContent("LandingText") },
         responses: {
-          200: { description: "Conteúdo atualizado" },
+          200: {
+            description: "Conteúdo criado/atualizado",
+            content: jsonContent("LandingText"),
+          },
+          400: errorResponse(),
           401: errorResponse(),
+          405: errorResponse(),
         },
       },
     },

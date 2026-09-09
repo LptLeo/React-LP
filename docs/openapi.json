@@ -1247,7 +1247,66 @@
         "summary": "Recupera os textos institucionais da landing",
         "responses": {
           "200": {
-            "description": "Conteúdo da landing"
+            "description": "Conteúdo institucional cadastrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LandingText"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -1255,7 +1314,7 @@
         "tags": [
           "Content"
         ],
-        "summary": "Atualiza os textos institucionais (admin)",
+        "summary": "Cria ou atualiza os textos institucionais (admin)",
         "security": [
           {
             "bearerAuth": []
@@ -1273,9 +1332,68 @@
         },
         "responses": {
           "200": {
-            "description": "Conteúdo atualizado"
+            "description": "Conteúdo criado/atualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LandingText"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
           },
           "401": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
             "description": "Erro de negócio ou validação",
             "content": {
               "application/json": {
