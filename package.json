@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "docs:api": "tsx scripts/generate-openapi.ts",
+    "docs:preview": "node scripts/serve-docs.mjs",
     "preview": "vite preview",
     "prepare": "husky"
   },

@@ -32,7 +32,9 @@
   "paths": {
     "/api/auth/login": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Autentica o administrador e emite token JWT",
         "requestBody": {
           "required": true,
@@ -69,7 +71,10 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "examples": ["error", "validation_error"]
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
                     },
                     "message": {
                       "type": "string"
@@ -88,7 +93,9 @@
     },
     "/api/products": {
       "get": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Lista produtos públicos com paginação e busca",
         "responses": {
           "200": {
@@ -97,7 +104,9 @@
         }
       },
       "post": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Cria um produto (admin)",
         "security": [
           {
@@ -127,7 +136,10 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "examples": ["error", "validation_error"]
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
                     },
                     "message": {
                       "type": "string"
@@ -146,7 +158,9 @@
     },
     "/api/products/{id}": {
       "put": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Atualiza um produto (admin)",
         "security": [
           {
@@ -186,7 +200,10 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "examples": ["error", "validation_error"]
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
                     },
                     "message": {
                       "type": "string"
@@ -203,7 +220,9 @@
         }
       },
       "delete": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Remove um produto (admin)",
         "security": [
           {
@@ -233,7 +252,10 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "examples": ["error", "validation_error"]
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
                     },
                     "message": {
                       "type": "string"
@@ -252,7 +274,9 @@
     },
     "/api/content": {
       "get": {
-        "tags": ["Content"],
+        "tags": [
+          "Content"
+        ],
         "summary": "Recupera os textos institucionais da landing",
         "responses": {
           "200": {
@@ -261,7 +285,9 @@
         }
       },
       "put": {
-        "tags": ["Content"],
+        "tags": [
+          "Content"
+        ],
         "summary": "Atualiza os textos institucionais (admin)",
         "security": [
           {
@@ -291,7 +317,10 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "examples": ["error", "validation_error"]
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
                     },
                     "message": {
                       "type": "string"
@@ -310,7 +339,9 @@
     },
     "/api/contact": {
       "get": {
-        "tags": ["Contact"],
+        "tags": [
+          "Contact"
+        ],
         "summary": "Recupera dados de contato e WhatsApp",
         "responses": {
           "200": {
@@ -319,7 +350,9 @@
         }
       },
       "put": {
-        "tags": ["Contact"],
+        "tags": [
+          "Contact"
+        ],
         "summary": "Atualiza dados de contato (admin)",
         "security": [
           {
@@ -349,7 +382,10 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "examples": ["error", "validation_error"]
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
                     },
                     "message": {
                       "type": "string"
@@ -389,7 +425,10 @@
             "minLength": 1
           }
         },
-        "required": ["email", "password"],
+        "required": [
+          "email",
+          "password"
+        ],
         "additionalProperties": false,
         "description": "Credenciais de acesso do administrador"
       },
@@ -424,7 +463,10 @@
                 "format": "uri"
               }
             },
-            "required": ["publicId", "url"],
+            "required": [
+              "publicId",
+              "url"
+            ],
             "additionalProperties": false,
             "description": "Imagem do produto armazenada no Cloudinary"
           },
@@ -482,7 +524,11 @@
                   "minLength": 10
                 }
               },
-              "required": ["icon", "title", "description"],
+              "required": [
+                "icon",
+                "title",
+                "description"
+              ],
               "additionalProperties": false,
               "description": "Card de benefício da seção de vantagens"
             }
@@ -502,7 +548,10 @@
                   "minLength": 3
                 }
               },
-              "required": ["question", "answer"],
+              "required": [
+                "question",
+                "answer"
+              ],
               "additionalProperties": false,
               "description": "Item de pergunta e resposta do FAQ"
             }
@@ -512,7 +561,13 @@
             "minLength": 2
           }
         },
-        "required": ["heroTitle", "heroSubtitle", "benefits", "faq", "ctaText"],
+        "required": [
+          "heroTitle",
+          "heroSubtitle",
+          "benefits",
+          "faq",
+          "ctaText"
+        ],
         "additionalProperties": false,
         "description": "Textos institucionais da landing page (singleton)"
       },
@@ -543,7 +598,10 @@
                   "format": "uri"
                 }
               },
-              "required": ["label", "url"],
+              "required": [
+                "label",
+                "url"
+              ],
               "additionalProperties": false,
               "description": "Link de rede social exibida no rodapé"
             }

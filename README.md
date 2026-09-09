@@ -86,8 +86,8 @@ Catálogo digital responsivo com fluxo de pedido direto para o WhatsApp, painel 
 ### Estrutura de Pastas (Frontend)
 
 ```text
-netlify/
-└── functions/           # Serverless Functions (ex: health.ts)
+api/
+└── functions/            # Serverless Functions (ex: health.ts, auth.ts)
 src/
 ├── app/                 # Rotas e páginas da aplicação
 │   ├── (public)/        # Landing Page e rotas abertas
@@ -169,23 +169,30 @@ O Mongoose cria o banco `catalogo` automaticamente na primeira conexão. Para de
 
 ### Execução Local com Serverless Functions (Netlify)
 
-As Serverless Functions ficam em `netlify/functions/` e usam Node **20** (definido em `.nvmrc` e `netlify.toml`). Para testá-las localmente, instale a CLI e rode:
+As Serverless Functions ficam em `api/functions/` (pasta com nome neutro, configurada no `netlify.toml` via `[functions] directory`), usam Node **20** (definido em `.nvmrc` e `netlify.toml`) e são expostas publicamente nas rotas `/api/*`. Para testá-las localmente, instale a CLI e rode:
 
 ```bash
 npm install -g netlify-cli
 netlify dev
 ```
 
-A function de health check fica disponível em `http://localhost:8888/.netlify/functions/health` e valida a conexão com o MongoDB.
+A function de health check fica disponível em `http://localhost:8888/api/health` e valida a conexão com o MongoDB.
 
-A especificação **OpenAPI** da API é gerada automaticamente a partir dos DTOs Zod (`npm run docs:api`) em `docs/openapi.json`.
+### Documentação da API (OpenAPI)
+
+A especificação **OpenAPI** é gerada automaticamente a partir dos DTOs Zod:
+
+```bash
+npm run docs:api         # gera docs/openapi.json
+npm run docs:preview     # abre o Swagger UI local (http://localhost:4174)
+```
 
 ### Endpoints atuais
 
-| Rota                         | Métodos | Descrição                                                               |
-| ---------------------------- | ------- | ----------------------------------------------------------------------- |
-| `/.netlify/functions/health` | GET     | Status do serviço e da conexão com o banco.                             |
-| `/.netlify/functions/auth`   | POST    | Login do admin (`{ email, password }`) → `{ status, data: { token } }`. |
+| Rota              | Métodos | Descrição                                                               |
+| ----------------- | ------- | ----------------------------------------------------------------------- |
+| `/api/health`     | GET     | Status do serviço e da conexão com o banco.                             |
+| `/api/auth/login` | POST    | Login do admin (`{ email, password }`) → `{ status, data: { token } }`. |
 
 O admin inicial é criado/seeded automaticamente na primeira chamada a `auth` (upsert idempotente usando `ADMIN_EMAIL`/`ADMIN_PASSWORD` do `.env` com hash bcrypt).
 
@@ -211,4 +218,5 @@ Este projeto utiliza **Conventional Commits** validados automaticamente via Husk
 | `npm run test`         | Executa os testes unitários (Vitest).             |
 | `npm run test:watch`   | Executa os testes em modo watch.                  |
 | `npm run docs:api`     | Gera `docs/openapi.json` a partir dos DTOs Zod.   |
+| `npm run docs:preview` | Abre o Swagger UI local da documentação.          |
 | `npm run preview`      | Serve localmente o bundle de produção gerado.     |
