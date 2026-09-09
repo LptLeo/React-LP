@@ -12,7 +12,10 @@
 import { writeFileSync } from "node:fs";
 import { createSchema } from "zod-openapi";
 import { loginSchema } from "../src/modules/auth/dto/login.dto";
-import { productSchema } from "../src/modules/products/dto/product.dto";
+import {
+  productSchema,
+  updateProductSchema,
+} from "../src/modules/products/dto/product.dto";
 import { landingTextSchema } from "../src/modules/content/dto/landing-text.dto";
 import { contactInfoSchema } from "../src/modules/contact/dto/contact-info.dto";
 
@@ -35,6 +38,59 @@ const errorResponse = () => ({
     },
   },
 });
+
+const productListParameters = [
+  {
+    name: "page",
+    in: "query",
+    required: false,
+    schema: { type: "integer", minimum: 1, default: 1 },
+    description: "Número da página, iniciando em 1.",
+  },
+  {
+    name: "limit",
+    in: "query",
+    required: false,
+    schema: { type: "integer", minimum: 1, maximum: 50, default: 10 },
+    description: "Quantidade de itens por página (máx. 50).",
+  },
+  {
+    name: "search",
+    in: "query",
+    required: false,
+    schema: { type: "string" },
+    description: "Busca case-insensitive por título ou categoria.",
+  },
+  {
+    name: "category",
+    in: "query",
+    required: false,
+    schema: { type: "string" },
+    description: "Filtro por categoria exata.",
+  },
+  {
+    name: "featured",
+    in: "query",
+    required: false,
+    schema: { type: "boolean" },
+    description: "Filtra apenas produtos em destaque.",
+  },
+  {
+    name: "active",
+    in: "query",
+    required: false,
+    schema: { type: "boolean", default: true },
+    description: "Filtra por visibilidade pública (padrão: true).",
+  },
+];
+
+const idPathParameter = {
+  name: "id",
+  in: "path",
+  required: true,
+  schema: { type: "string" },
+  description: "ID (ObjectId) do produto.",
+};
 
 const document = {
   openapi: "3.1.0",
@@ -77,7 +133,15 @@ const document = {
       get: {
         tags: ["Products"],
         summary: "Lista produtos públicos com paginação e busca",
-        responses: { 200: { description: "Lista de produtos" } },
+        parameters: productListParameters,
+        responses: {
+          200: {
+            description: "Lista paginada de produtos",
+            content: jsonContent("ProductPage"),
+          },
+          400: errorResponse(),
+          405: errorResponse(),
+        },
       },
       post: {
         tags: ["Products"],
@@ -85,45 +149,74 @@ const document = {
         security: [{ bearerAuth: [] }],
         requestBody: { required: true, content: jsonContent("Product") },
         responses: {
-          201: { description: "Produto criado" },
+          201: {
+            description: "Produto criado",
+            content: jsonContent("Product"),
+          },
+          400: errorResponse(),
           401: errorResponse(),
+          405: errorResponse(),
         },
       },
     },
     "/api/products/{id}": {
+      get: {
+        tags: ["Products"],
+        summary: "Busca um produto pelo ID (público)",
+        parameters: [idPathParameter],
+        responses: {
+          200: {
+            description: "Produto encontrado",
+            content: jsonContent("Product"),
+          },
+          400: errorResponse(),
+          404: errorResponse(),
+        },
+      },
       put: {
         tags: ["Products"],
         summary: "Atualiza um produto (admin)",
         security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        requestBody: { required: true, content: jsonContent("Product") },
+        parameters: [idPathParameter],
+        requestBody: { required: true, content: jsonContent("ProductUpdate") },
         responses: {
-          200: { description: "Produto atualizado" },
+          200: {
+            description: "Produto atualizado",
+            content: jsonContent("Product"),
+          },
+          400: errorResponse(),
+          401: errorResponse(),
           404: errorResponse(),
+          405: errorResponse(),
         },
       },
       delete: {
         tags: ["Products"],
         summary: "Remove um produto (admin)",
         security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
+        parameters: [idPathParameter],
         responses: {
-          200: { description: "Produto removido" },
+          200: {
+            description: "Produto removido",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    status: { type: "string", examples: ["ok"] },
+                    message: {
+                      type: "string",
+                      examples: ["Produto removido."],
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: errorResponse(),
+          401: errorResponse(),
           404: errorResponse(),
+          405: errorResponse(),
         },
       },
     },
@@ -169,6 +262,20 @@ const document = {
     schemas: {
       LoginRequest: createSchema(loginSchema).schema,
       Product: createSchema(productSchema).schema,
+      ProductUpdate: createSchema(updateProductSchema).schema,
+      ProductPage: {
+        type: "object",
+        properties: {
+          items: {
+            type: "array",
+            items: { $ref: "#/components/schemas/Product" },
+          },
+          total: { type: "integer" },
+          page: { type: "integer" },
+          limit: { type: "integer" },
+          totalPages: { type: "integer" },
+        },
+      },
       LandingText: createSchema(landingTextSchema).schema,
       ContactInfo: createSchema(contactInfoSchema).schema,
     },

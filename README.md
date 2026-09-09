@@ -189,10 +189,15 @@ npm run docs:preview     # abre o Swagger UI local (http://localhost:4174)
 
 ### Endpoints atuais
 
-| Rota              | Métodos | Descrição                                                               |
-| ----------------- | ------- | ----------------------------------------------------------------------- |
-| `/api/health`     | GET     | Status do serviço e da conexão com o banco.                             |
-| `/api/auth/login` | POST    | Login do admin (`{ email, password }`) → `{ status, data: { token } }`. |
+| Rota                 | Métodos | Descrição                                                                                                          |
+| -------------------- | ------- | ------------------------------------------------------------------------------------------------------------------ |
+| `/api/health`        | GET     | Status do serviço e da conexão com o banco.                                                                        |
+| `/api/auth/login`    | POST    | Login do admin (`{ email, password }`) → `{ status, data: { token } }`.                                            |
+| `/api/products`      | GET     | Lista produtos públicos (paginação com `page`/`limit`, busca `search` e filtros `category`, `featured`, `active`). |
+| `/api/products`      | POST    | Cria produto (protegido — Bearer token).                                                                           |
+| `/api/products/{id}` | GET     | Detalhe de um produto (público).                                                                                   |
+| `/api/products/{id}` | PUT     | Atualiza produto (protegido — Bearer token).                                                                       |
+| `/api/products/{id}` | DELETE  | Remove produto (protegido — Bearer token).                                                                         |
 
 O admin inicial é criado/seeded automaticamente na primeira chamada a `auth` (upsert idempotente usando `ADMIN_EMAIL`/`ADMIN_PASSWORD` do `.env` com hash bcrypt).
 
