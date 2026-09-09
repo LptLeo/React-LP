@@ -180,6 +180,15 @@ A function de health check fica disponível em `http://localhost:8888/.netlify/f
 
 A especificação **OpenAPI** da API é gerada automaticamente a partir dos DTOs Zod (`npm run docs:api`) em `docs/openapi.json`.
 
+### Endpoints atuais
+
+| Rota                         | Métodos | Descrição                                                               |
+| ---------------------------- | ------- | ----------------------------------------------------------------------- |
+| `/.netlify/functions/health` | GET     | Status do serviço e da conexão com o banco.                             |
+| `/.netlify/functions/auth`   | POST    | Login do admin (`{ email, password }`) → `{ status, data: { token } }`. |
+
+O admin inicial é criado/seeded automaticamente na primeira chamada a `auth` (upsert idempotente usando `ADMIN_EMAIL`/`ADMIN_PASSWORD` do `.env` com hash bcrypt).
+
 ### Convenção de Commits e Workflow Git
 
 Este projeto utiliza **Conventional Commits** validados automaticamente via Husky e Commitlint.

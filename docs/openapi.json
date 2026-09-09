@@ -390,7 +390,8 @@
           }
         },
         "required": ["email", "password"],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Credenciais de acesso do administrador"
       },
       "Product": {
         "type": "object",

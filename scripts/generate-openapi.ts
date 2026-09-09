@@ -11,16 +11,10 @@
  */
 import { writeFileSync } from "node:fs";
 import { createSchema } from "zod-openapi";
-import { z } from "zod";
+import { loginSchema } from "../src/modules/auth/dto/login.dto";
 import { productSchema } from "../src/modules/products/dto/product.dto";
 import { landingTextSchema } from "../src/modules/content/dto/landing-text.dto";
 import { contactInfoSchema } from "../src/modules/contact/dto/contact-info.dto";
-
-/* Schema provisório do body de login (será movido para o módulo de Auth na issue #6). */
-const loginSchema = z.object({
-  email: z.email("E-mail inválido"),
-  password: z.string().min(1, "Senha é obrigatória"),
-});
 
 const jsonContent = (schemaRef: string) => ({
   "application/json": { schema: { $ref: `#/components/schemas/${schemaRef}` } },
