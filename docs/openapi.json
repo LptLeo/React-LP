@@ -21,6 +21,10 @@
       "description": "Catálogo de produtos (CRUD)"
     },
     {
+      "name": "Admins",
+      "description": "Gestão de administradores (owner)"
+    },
+    {
       "name": "Content",
       "description": "Textos institucionais e FAQ"
     },
@@ -719,6 +723,522 @@
         }
       }
     },
+    "/api/admins": {
+      "get": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Lista administradores (owner)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Administradores (nunca expõe passwordHash)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Cria um administrador (owner)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Administrador criado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Admin"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admins/{id}": {
+      "put": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Atualiza um administrador (owner)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID (ObjectId) do administrador."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Administrador atualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Admin"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Remove um administrador (owner)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID (ObjectId) do administrador."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Administrador removido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "ok"
+                      ]
+                    },
+                    "message": {
+                      "type": "string",
+                      "examples": [
+                        "Administrador removido."
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/content": {
       "get": {
         "tags": [
@@ -1142,6 +1662,122 @@
         ],
         "additionalProperties": false,
         "description": "Dados de contato, redes sociais e template de WhatsApp"
+      },
+      "AdminCreate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Nome de exibição do administrador no painel",
+            "type": "string",
+            "minLength": 2
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+            "description": "E-mail de acesso do administrador"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "Senha de acesso (armazenada apenas como hash bcrypt)"
+          },
+          "role": {
+            "default": "editor",
+            "description": "Papel do administrador (owner gerencia administradores)",
+            "type": "string",
+            "enum": [
+              "owner",
+              "editor"
+            ]
+          },
+          "active": {
+            "default": true,
+            "description": "Se o administrador pode acessar o painel",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "role",
+          "active"
+        ],
+        "additionalProperties": false,
+        "description": "Payload de criação de um administrador"
+      },
+      "AdminUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Novo nome de exibição do administrador",
+            "type": "string",
+            "minLength": 2
+          },
+          "email": {
+            "description": "Novo e-mail de acesso",
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "password": {
+            "description": "Reset de senha (opcional)",
+            "type": "string",
+            "minLength": 8
+          },
+          "role": {
+            "description": "Novo papel do administrador",
+            "type": "string",
+            "enum": [
+              "owner",
+              "editor"
+            ]
+          },
+          "active": {
+            "description": "Ativa/desativa o acesso ao painel",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Payload de atualização de um administrador"
+      },
+      "Admin": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "owner",
+              "editor"
+            ]
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AdminList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Admin"
+        }
       }
     }
   }

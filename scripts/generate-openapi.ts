@@ -18,6 +18,10 @@ import {
 } from "../src/modules/products/dto/product.dto";
 import { landingTextSchema } from "../src/modules/content/dto/landing-text.dto";
 import { contactInfoSchema } from "../src/modules/contact/dto/contact-info.dto";
+import {
+  createAdminSchema,
+  updateAdminSchema,
+} from "../src/modules/admins/dto/admin.dto";
 
 const jsonContent = (schemaRef: string) => ({
   "application/json": { schema: { $ref: `#/components/schemas/${schemaRef}` } },
@@ -92,6 +96,14 @@ const idPathParameter = {
   description: "ID (ObjectId) do produto.",
 };
 
+const adminIdPathParameter = {
+  name: "id",
+  in: "path",
+  required: true,
+  schema: { type: "string" },
+  description: "ID (ObjectId) do administrador.",
+};
+
 const document = {
   openapi: "3.1.0",
   info: {
@@ -104,6 +116,7 @@ const document = {
   tags: [
     { name: "Auth", description: "Autenticação da área administrativa" },
     { name: "Products", description: "Catálogo de produtos (CRUD)" },
+    { name: "Admins", description: "Gestão de administradores (owner)" },
     { name: "Content", description: "Textos institucionais e FAQ" },
     { name: "Contact", description: "Dados de contato e WhatsApp" },
   ],
@@ -220,6 +233,85 @@ const document = {
         },
       },
     },
+    "/api/admins": {
+      get: {
+        tags: ["Admins"],
+        summary: "Lista administradores (owner)",
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: {
+            description: "Administradores (nunca expõe passwordHash)",
+            content: jsonContent("AdminList"),
+          },
+          401: errorResponse(),
+          403: errorResponse(),
+        },
+      },
+      post: {
+        tags: ["Admins"],
+        summary: "Cria um administrador (owner)",
+        security: [{ bearerAuth: [] }],
+        requestBody: { required: true, content: jsonContent("AdminCreate") },
+        responses: {
+          201: {
+            description: "Administrador criado",
+            content: jsonContent("Admin"),
+          },
+          400: errorResponse(),
+          401: errorResponse(),
+          403: errorResponse(),
+          409: errorResponse(),
+        },
+      },
+    },
+    "/api/admins/{id}": {
+      put: {
+        tags: ["Admins"],
+        summary: "Atualiza um administrador (owner)",
+        security: [{ bearerAuth: [] }],
+        parameters: [adminIdPathParameter],
+        requestBody: { required: true, content: jsonContent("AdminUpdate") },
+        responses: {
+          200: {
+            description: "Administrador atualizado",
+            content: jsonContent("Admin"),
+          },
+          400: errorResponse(),
+          401: errorResponse(),
+          403: errorResponse(),
+          404: errorResponse(),
+        },
+      },
+      delete: {
+        tags: ["Admins"],
+        summary: "Remove um administrador (owner)",
+        security: [{ bearerAuth: [] }],
+        parameters: [adminIdPathParameter],
+        responses: {
+          200: {
+            description: "Administrador removido",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    status: { type: "string", examples: ["ok"] },
+                    message: {
+                      type: "string",
+                      examples: ["Administrador removido."],
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: errorResponse(),
+          401: errorResponse(),
+          403: errorResponse(),
+          404: errorResponse(),
+        },
+      },
+    },
     "/api/content": {
       get: {
         tags: ["Content"],
@@ -278,6 +370,24 @@ const document = {
       },
       LandingText: createSchema(landingTextSchema).schema,
       ContactInfo: createSchema(contactInfoSchema).schema,
+      AdminCreate: createSchema(createAdminSchema).schema,
+      AdminUpdate: createSchema(updateAdminSchema).schema,
+      Admin: {
+        type: "object",
+        properties: {
+          _id: { type: "string" },
+          email: { type: "string" },
+          name: { type: "string" },
+          role: { type: "string", enum: ["owner", "editor"] },
+          active: { type: "boolean" },
+          createdAt: { type: "string", format: "date-time" },
+          updatedAt: { type: "string", format: "date-time" },
+        },
+      },
+      AdminList: {
+        type: "array",
+        items: { $ref: "#/components/schemas/Admin" },
+      },
     },
   },
 };
