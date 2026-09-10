@@ -35,22 +35,26 @@ function assertValidProductId(id: string): void {
 }
 
 /**
- * Lista produtos públicos com paginação e filtros.
+ * Lista produtos com paginação e filtros.
  *
  * Por padrão apenas produtos ativos são exibidos (visibilidade do catálogo).
+ * Quando `adminList` é `true` (painel autenticado) e o filtro `active` não foi
+ * informado, todos os produtos são listados — ativos e inativos.
  *
  * @param query - Parâmetros validados de listagem (página, limite, busca e filtros).
+ * @param adminList - Se verdadeiro, não filtra por `active` por padrão (modo admin).
  * @returns Página de produtos com metadados de paginação.
  */
 export async function listProducts(
   query: ProductListQueryDTO,
+  adminList = false,
 ): Promise<ProductPage> {
   return listProductsInDatabase(
     {
       search: query.search || undefined,
       category: query.category || undefined,
       featured: query.featured,
-      active: query.active ?? true,
+      active: query.active ?? (adminList ? undefined : true),
     },
     query.page,
     query.limit,

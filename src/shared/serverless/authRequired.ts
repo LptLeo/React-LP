@@ -53,3 +53,23 @@ export function getAuthContext(request: Request): AuthContext {
     throw new AppError("Token inválido ou expirado.", 401);
   }
 }
+
+/**
+ * Valida o header `Authorization` de forma opcional.
+ *
+ * Retorna `null` quando não há token (acesso anônimo) e delega ao
+ * `getAuthContext` para validar o token quando presente.
+ *
+ * @param request - Request Web standard (Netlify Functions).
+ * @returns Contexto de autenticação ou `null` quando o acesso é anônimo.
+ * @throws AppError - Token presente mas inválido/expirado (401).
+ */
+export function getOptionalAuthContext(request: Request): AuthContext | null {
+  const header = request.headers.get("authorization");
+
+  if (!header?.startsWith("Bearer ")) {
+    return null;
+  }
+
+  return getAuthContext(request);
+}

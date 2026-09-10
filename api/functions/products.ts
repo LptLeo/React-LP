@@ -22,7 +22,10 @@ import {
 } from "../../src/modules/products/services/product.service";
 import { connectDatabase } from "../../src/shared/database/mongo";
 import { errorHandler } from "../../src/shared/errors/errorHandler";
-import { getAuthContext } from "../../src/shared/serverless/authRequired";
+import {
+  getAuthContext,
+  getOptionalAuthContext,
+} from "../../src/shared/serverless/authRequired";
 import {
   methodNotAllowed,
   readJsonBody,
@@ -60,7 +63,9 @@ export default async (request: Request): Promise<Response> => {
           return errorHandler(parsed.error);
         }
 
-        const page = await listProducts(parsed.data);
+        // Com token válido (painel) a listagem inclui produtos inativos.
+        const adminContext = getOptionalAuthContext(request);
+        const page = await listProducts(parsed.data, adminContext !== null);
         return Response.json({ status: "ok", data: page });
       }
 

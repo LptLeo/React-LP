@@ -140,6 +140,28 @@ describe("product.service", () => {
     expect(page.items[0].title).toBe("Inativo");
   });
 
+  it("no modo admin lista todos os produtos (ativos e inativos)", async () => {
+    await createProduct({ ...baseProduct, title: "Ativo" });
+    await createProduct({ ...baseProduct, title: "Inativo", active: false });
+
+    const page = await listProducts({ page: 1, limit: 10 }, true);
+
+    expect(page.total).toBe(2);
+  });
+
+  it("no modo admin respeita o filtro active informado", async () => {
+    await createProduct({ ...baseProduct, title: "Ativo" });
+    await createProduct({ ...baseProduct, title: "Inativo", active: false });
+
+    const page = await listProducts(
+      { page: 1, limit: 10, active: false },
+      true,
+    );
+
+    expect(page.total).toBe(1);
+    expect(page.items[0].title).toBe("Inativo");
+  });
+
   it("busca um produto pelo ID", async () => {
     const created = await createProduct(baseProduct);
 
