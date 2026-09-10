@@ -213,15 +213,15 @@ O **primeiro** administrador (papel `owner`) é criado automaticamente na primei
 
 O painel fica disponível em `/admin` e usa **React Router + Token JWT** no `localStorage`:
 
-| Rota              | Acesso    | Descrição                                               |
-| ----------------- | --------- | ------------------------------------------------------- |
-| `/admin/login`    | Público   | Tela de login (consome `POST /api/auth/login`).         |
-| `/admin`          | Protegida | Dashboard com atalhos para as áreas de gestão.          |
-| `/admin/products` | Protegida | Gestão de produtos (em construção).                     |
-| `/admin/content`  | Protegida | Textos institucionais e FAQ da landing (em construção). |
-| `/admin/contact`  | Protegida | Dados de contato e WhatsApp (em construção).            |
+| Rota              | Acesso    | Descrição                                                                    |
+| ----------------- | --------- | ---------------------------------------------------------------------------- |
+| `/admin/login`    | Público   | Tela de login (consome `POST /api/auth/login`).                              |
+| `/admin`          | Protegida | Dashboard com atalhos para as áreas de gestão.                               |
+| `/admin/products` | Protegida | Gestão de produtos: lista (com inativos), criação, edição, ativar/desativar. |
+| `/admin/content`  | Protegida | Textos institucionais e FAQ da landing (em construção).                      |
+| `/admin/contact`  | Protegida | Dados de contato e WhatsApp (em construção).                                 |
 
-Rotas protegidas redirecionam para `/admin/login` quando não há token (e retornam ao destino original após login). Em desenvolvimento local, o Vite (`npm run dev`) encaminha `/api/*` para o `netlify dev` (porta `8888`) via proxy (`vite.config.ts`).
+Rotas protegidas redirecionam para `/admin/login` quando não há token (e retornam ao destino original após login). Em desenvolvimento local, o Vite (`npm run dev`) encaminha `/api/*` para o `netlify dev` (porta `8888`) via proxy (`vite.config.ts`). No backend, o `GET /api/products` autenticado (Bearer) passa a listar também produtos **inativos** (modo admin); anônimo continua vendo apenas os ativos.
 
 ### Convenção de Commits e Workflow Git
 
