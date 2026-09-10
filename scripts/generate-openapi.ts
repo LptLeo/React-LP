@@ -345,16 +345,28 @@ const document = {
       get: {
         tags: ["Contact"],
         summary: "Recupera dados de contato e WhatsApp",
-        responses: { 200: { description: "Dados de contato" } },
+        responses: {
+          200: {
+            description: "Dados de contato cadastrados",
+            content: jsonContent("ContactInfo"),
+          },
+          404: errorResponse(),
+          405: errorResponse(),
+        },
       },
       put: {
         tags: ["Contact"],
-        summary: "Atualiza dados de contato (admin)",
+        summary: "Cria ou atualiza dados de contato (admin)",
         security: [{ bearerAuth: [] }],
         requestBody: { required: true, content: jsonContent("ContactInfo") },
         responses: {
-          200: { description: "Contato atualizado" },
+          200: {
+            description: "Contato criado/atualizado",
+            content: jsonContent("ContactInfo"),
+          },
+          400: errorResponse(),
           401: errorResponse(),
+          405: errorResponse(),
         },
       },
     },

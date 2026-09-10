@@ -204,6 +204,8 @@ npm run docs:preview     # abre o Swagger UI local (http://localhost:4174)
 | `/api/admins/{id}`   | DELETE  | Remove administrador (somente owner — Bearer token).                                                               |
 | `/api/content`       | GET     | Textos institucionais da landing (hero, benefícios, FAQ, CTA) — público; 404 até cadastrar.                        |
 | `/api/content`       | PUT     | Cria/atualiza os textos institucionais (obj. completo — Bearer token).                                             |
+| `/api/contact`       | GET     | Dados de contato (WhatsApp, e-mail, redes sociais, template de mensagem) — público; 404 até cadastrar.             |
+| `/api/contact`       | PUT     | Cria/atualiza dados de contato (obj. completo — Bearer token).                                                     |
 
 O **primeiro** administrador (papel `owner`) é criado automaticamente na primeira chamada a `/api/auth/login` via seed **condicional**: se o `ADMIN_EMAIL` já existir, nada é sobrescrito (a senha do `.env` deixa de valer após a inicialização). Administradores adicionais (**multi-admin**) são gerenciados via `/api/admins` por uma conta **owner**, com papéis `owner`/`editor` e ativação/desativação instantânea (contas desativadas não autenticam). O `passwordHash` nunca é exposto nas respostas.
 

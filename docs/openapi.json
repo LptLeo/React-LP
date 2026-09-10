@@ -1430,7 +1430,66 @@
         "summary": "Recupera dados de contato e WhatsApp",
         "responses": {
           "200": {
-            "description": "Dados de contato"
+            "description": "Dados de contato cadastrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -1438,7 +1497,7 @@
         "tags": [
           "Contact"
         ],
-        "summary": "Atualiza dados de contato (admin)",
+        "summary": "Cria ou atualiza dados de contato (admin)",
         "security": [
           {
             "bearerAuth": []
@@ -1456,9 +1515,68 @@
         },
         "responses": {
           "200": {
-            "description": "Contato atualizado"
+            "description": "Contato criado/atualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
           },
           "401": {
+            "description": "Erro de negócio ou validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "examples": [
+                        "error",
+                        "validation_error"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
             "description": "Erro de negócio ou validação",
             "content": {
               "application/json": {
