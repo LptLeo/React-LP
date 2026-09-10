@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Playwright MCP (snapshots temporários)
+.playwright-mcp
+
 # Environment variables
 .env
 .env.*

@@ -11,4 +11,13 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  server: {
+    proxy: {
+      // Encaminha as chamadas da API para o netlify dev (porta 8888) em dev.
+      "/api": {
+        target: "http://localhost:8888",
+        changeOrigin: true,
+      },
+    },
+  },
 });
