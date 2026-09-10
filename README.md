@@ -209,6 +209,20 @@ npm run docs:preview     # abre o Swagger UI local (http://localhost:4174)
 
 O **primeiro** administrador (papel `owner`) é criado automaticamente na primeira chamada a `/api/auth/login` via seed **condicional**: se o `ADMIN_EMAIL` já existir, nada é sobrescrito (a senha do `.env` deixa de valer após a inicialização). Administradores adicionais (**multi-admin**) são gerenciados via `/api/admins` por uma conta **owner**, com papéis `owner`/`editor` e ativação/desativação instantânea (contas desativadas não autenticam). O `passwordHash` nunca é exposto nas respostas.
 
+### Área Administrativa
+
+O painel fica disponível em `/admin` e usa **React Router + Token JWT** no `localStorage`:
+
+| Rota              | Acesso    | Descrição                                               |
+| ----------------- | --------- | ------------------------------------------------------- |
+| `/admin/login`    | Público   | Tela de login (consome `POST /api/auth/login`).         |
+| `/admin`          | Protegida | Dashboard com atalhos para as áreas de gestão.          |
+| `/admin/products` | Protegida | Gestão de produtos (em construção).                     |
+| `/admin/content`  | Protegida | Textos institucionais e FAQ da landing (em construção). |
+| `/admin/contact`  | Protegida | Dados de contato e WhatsApp (em construção).            |
+
+Rotas protegidas redirecionam para `/admin/login` quando não há token (e retornam ao destino original após login). Em desenvolvimento local, o Vite (`npm run dev`) encaminha `/api/*` para o `netlify dev` (porta `8888`) via proxy (`vite.config.ts`).
+
 ### Convenção de Commits e Workflow Git
 
 Este projeto utiliza **Conventional Commits** validados automaticamente via Husky e Commitlint.
