@@ -26,6 +26,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/upload-signature*"
+  to = "/.netlify/functions/upload-signature"
+  status = 200
+
+[[redirects]]
   from = "/api/admins*"
   to = "/.netlify/functions/admins"
   status = 200

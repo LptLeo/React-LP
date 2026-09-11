@@ -29,6 +29,19 @@ export const productFormSchema = z.object({
   featured: z.boolean().default(false),
   /** Controla a visibilidade do produto no catálogo público. */
   active: z.boolean().default(true),
+  /** Imagem principal (Cloudinary) — opcional; `null` remove a imagem. */
+  image: z
+    .object({
+      /** Identificador público da imagem no Cloudinary. */
+      publicId: z.string().min(1, "publicId da imagem é obrigatório"),
+      /** URL pública e segura da imagem. */
+      url: z.url("URL da imagem inválida"),
+    })
+    .nullable()
+    .optional(),
 });
 
 export type ProductFormValues = z.infer<typeof productFormSchema>;
+
+/** Imagem principal de um produto (Cloudinary). */
+export type ProductFormImage = NonNullable<ProductFormValues["image"]>;

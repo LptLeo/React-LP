@@ -1,12 +1,23 @@
 /**
- * Formulário de criação/edição de produto com validação Zod na borda.
+ * Formulário de criação/edição de produto com validação Zod na borda
+ * e upload assinado de imagem para o Cloudinary.
  */
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import {
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
 import {
   productFormSchema,
   type ProductFormValues,
 } from "@/features/products/schemas/product.form.schema";
 import type { AdminProduct } from "@/features/products/services/product.service";
+import type { AdminProductImage } from "@/features/products/services/product.service";
+import {
+  uploadProductImage,
+  type UploadedProductImage,
+} from "@/features/products/services/upload.service";
 import { Alert } from "@/shared/components/ui/Alert";
 import { Button } from "@/shared/components/ui/Button";
 import { Input } from "@/shared/components/ui/Input";
@@ -17,9 +28,9 @@ import { Textarea } from "@/shared/components/ui/Textarea";
 interface ProductFormProps {
   /** Produto em edição (ou `null` para criação). */
   product: AdminProduct | null;
-  /** Callback de salvamento (lança erro para exibição no formulário). */
+  /** Callback de salvamento. */
   onSubmit: (values: ProductFormValues) => Promise<void>;
-  /** Cancela e fecha o formulário. */
+  /** Cancela a operação. */
   onCancel: () => void;
 }
 
@@ -31,6 +42,8 @@ type FormState = {
   category: string;
   featured: boolean;
   active: boolean;
+  /** Imagem principal do produto (Cloudinary) — opcional. */
+  image: AdminProductImage | null;
 };
 
 function toFormState(product: AdminProduct | null): FormState {
@@ -43,6 +56,7 @@ function toFormState(product: AdminProduct | null): FormState {
       category: "",
       featured: false,
       active: true,
+      image: null,
     };
   }
 
@@ -55,24 +69,56 @@ function toFormState(product: AdminProduct | null): FormState {
     category: product.category,
     featured: product.featured,
     active: product.active,
+    image: product.image ?? null,
   };
 }
 
 /**
- * Formulário de produto (criação e edição).
- *
- * @param props - Produto em edição, callback de submit e de cancelamento.
+ * Formulário de produto com upload de imagem.
  */
 export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
   const [form, setForm] = useState<FormState>(() => toFormState(product));
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
+  /** Altera um único campo do estado do formulário. */
   function setField<Key extends keyof FormState>(
     key: Key,
     value: FormState[Key],
   ) {
     setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  /** Envia a imagem selecionada direto para o Cloudinary. */
+  async function handleImageSelect(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    setError(null);
+    setUploading(true);
+    try {
+      const uploaded: UploadedProductImage = await uploadProductImage(file);
+      setField("image", {
+        publicId: uploaded.publicId,
+        url: uploaded.url,
+      });
+    } catch (uploadError) {
+      setError(
+        uploadError instanceof Error
+          ? uploadError.message
+          : "Não foi possível enviar a imagem.",
+      );
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  /** Remove a imagem do produto (não envia `null` ao backend). */
+  function handleImageRemove() {
+    setField("image", null);
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -86,12 +132,19 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
       return;
     }
 
+    const { image, ...rest } = parsed.data;
+    const payload = image
+      ? { ...rest, image: { publicId: image.publicId, url: image.url } }
+      : rest;
+
     setLoading(true);
     try {
-      await onSubmit(parsed.data);
+      await onSubmit(payload);
     } catch (submitError) {
       setError(
-        submitError instanceof Error ? submitError.message : "Erro ao salvar.",
+        submitError instanceof Error
+          ? submitError.message
+          : "Não foi possível salvar o produto.",
       );
     } finally {
       setLoading(false);
@@ -117,7 +170,7 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
           id="product-description"
           value={form.description}
           onChange={(event) => setField("description", event.target.value)}
-          placeholder="Descrição detalhada do produto..."
+          placeholder="Descreva o produto em detalhes..."
           required
         />
       </div>
@@ -161,39 +214,90 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
         />
       </div>
 
+      <div>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="product-image">Imagem do produto</Label>
+          {form.image && (
+            <button
+              type="button"
+              onClick={handleImageRemove}
+              className="text-sm text-secondary underline hover:text-danger"
+            >
+              Remover imagem
+            </button>
+          )}
+        </div>
+
+        {form.image ? (
+          <div className="mt-2 flex items-center gap-3">
+            <img
+              src={form.image.url}
+              alt="Prévia da imagem do produto"
+              className="h-16 w-16 rounded-md border border-secondary/30 object-cover"
+            />
+            <button
+              type="button"
+              onClick={() => imageInputRef.current?.click()}
+              className="text-sm text-primary underline hover:underline-offset-2"
+            >
+              Substituir imagem
+            </button>
+          </div>
+        ) : (
+          <div className="mt-2">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => imageInputRef.current?.click()}
+              disabled={uploading}
+            >
+              {uploading && <Spinner className="mr-2 size-4" />}
+              {uploading ? "Enviando..." : "Enviar imagem"}
+            </Button>
+          </div>
+        )}
+
+        <input
+          ref={imageInputRef}
+          id="product-image"
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleImageSelect}
+        />
+      </div>
+
       <fieldset className="flex flex-wrap items-center gap-6">
-        <label className="text-text flex cursor-pointer items-center gap-2 text-sm">
+        <legend className="sr-only">Configurações do produto</legend>
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-text">
           <input
             type="checkbox"
             checked={form.featured}
-            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              setField("featured", event.target.checked)
-            }
+            onChange={(event) => setField("featured", event.target.checked)}
             className="size-4 accent-[var(--color-primary)]"
           />
           Em destaque
         </label>
-        <label className="text-text flex cursor-pointer items-center gap-2 text-sm">
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-text">
           <input
             type="checkbox"
             checked={form.active}
-            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              setField("active", event.target.checked)
-            }
+            onChange={(event) => setField("active", event.target.checked)}
             className="size-4 accent-[var(--color-primary)]"
           />
-          Publicado no catálogo
+          Publicado
         </label>
       </fieldset>
 
       {error && <Alert variant="error">{error}</Alert>}
 
-      <div className="flex justify-end gap-2 pt-2">
-        <Button variant="ghost" onClick={onCancel} disabled={loading}>
+      <div className="flex justify-end gap-3">
+        <Button variant="secondary" onClick={onCancel} disabled={loading}>
           Cancelar
         </Button>
-        <Button type="submit" disabled={loading}>
-          {loading && <Spinner />}
+        <Button type="submit" variant="primary" disabled={loading}>
+          {loading && <Spinner className="mr-2 size-4" />}
           {loading ? "Salvando..." : "Salvar"}
         </Button>
       </div>
