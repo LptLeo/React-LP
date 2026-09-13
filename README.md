@@ -8,9 +8,9 @@ Catálogo digital responsivo com fluxo de pedido direto para o WhatsApp, painel 
 
 ### Proposta de Valor
 
-| Público | Benefício |
-| --- | --- |
-| **Cliente** | Navegação rápida em catálogo responsivo, busca em tempo real, seleção de itens e envio de pedido formatado direto para o WhatsApp do vendedor. |
+| Público      | Benefício                                                                                                                                                |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Cliente**  | Navegação rápida em catálogo responsivo, busca em tempo real, seleção de itens e envio de pedido formatado direto para o WhatsApp do vendedor.           |
 | **Vendedor** | Painel administrativo (`/admin`) para gestão de produtos, estoque, fotos e conteúdos, sem depender de suporte técnico ou custos fixos de infraestrutura. |
 
 ---
@@ -39,66 +39,74 @@ Catálogo digital responsivo com fluxo de pedido direto para o WhatsApp, painel 
 
 ### Product
 
-| Campo | Tipo | Descrição |
-| --- | --- | --- |
-| `id` | `string` | Identificador único do produto. |
-| `title` | `string` | Título do produto. |
-| `description` | `string` | Descrição detalhada do produto. |
-| `price` | `number` | Preço do produto em reais. |
-| `imageUrl` | `string` | URL da imagem hospedada no Cloudinary. |
-| `quantity` | `number` | Quantidade disponível em estoque. |
-| `isFeatured` | `boolean` | Define se o produto aparece em destaque (carrossel). |
-| `isActive` | `boolean` | Define se o produto está ativo/visível no catálogo. |
-| `createdAt` | `Date` | Data de criação do registro. |
+| Campo         | Tipo      | Descrição                                            |
+| ------------- | --------- | ---------------------------------------------------- |
+| `id`          | `string`  | Identificador único do produto.                      |
+| `title`       | `string`  | Título do produto.                                   |
+| `description` | `string`  | Descrição detalhada do produto.                      |
+| `price`       | `number`  | Preço do produto em reais.                           |
+| `imageUrl`    | `string`  | URL da imagem hospedada no Cloudinary.               |
+| `quantity`    | `number`  | Quantidade disponível em estoque.                    |
+| `isFeatured`  | `boolean` | Define se o produto aparece em destaque (carrossel). |
+| `isActive`    | `boolean` | Define se o produto está ativo/visível no catálogo.  |
+| `createdAt`   | `Date`    | Data de criação do registro.                         |
 
 ### LandingText
 
-| Campo | Tipo | Descrição |
-| --- | --- | --- |
-| `id` | `string` | Identificador único do conteúdo. |
+| Campo        | Tipo     | Descrição                                                            |
+| ------------ | -------- | -------------------------------------------------------------------- |
+| `id`         | `string` | Identificador único do conteúdo.                                     |
 | `sectionKey` | `string` | Chave que identifica a seção da página (ex: `hero`, `faq`, `about`). |
-| `title` | `string` | Título do conteúdo exibido na seção. |
-| `content` | `string` | Corpo do conteúdo (texto institucional ou pergunta/resposta do FAQ). |
+| `title`      | `string` | Título do conteúdo exibido na seção.                                 |
+| `content`    | `string` | Corpo do conteúdo (texto institucional ou pergunta/resposta do FAQ). |
 
 ### ContactInfo
 
-| Campo | Tipo | Descrição |
-| --- | --- | --- |
-| `id` | `string` | Identificador único do registro. |
-| `phone` | `string` | Telefone/WhatsApp do vendedor (com DDI e DDD). |
-| `email` | `string` | E-mail de contato. |
-| `instagram` | `string` | Handle do Instagram. |
-| `facebook` | `string` | URL ou handle do Facebook. |
+| Campo                     | Tipo     | Descrição                                            |
+| ------------------------- | -------- | ---------------------------------------------------- |
+| `id`                      | `string` | Identificador único do registro.                     |
+| `phone`                   | `string` | Telefone/WhatsApp do vendedor (com DDI e DDD).       |
+| `email`                   | `string` | E-mail de contato.                                   |
+| `instagram`               | `string` | Handle do Instagram.                                 |
+| `facebook`                | `string` | URL ou handle do Facebook.                           |
 | `whatsappMessageTemplate` | `string` | Template da mensagem de pedido enviada via WhatsApp. |
 
 ---
 
 ## 4. Tech Stack & Arquitetura
 
-| Camada | Tecnologia |
-| --- | --- |
-| **Frontend** | React.js (Vite) + TypeScript + Tailwind CSS |
-| **Validação & Tipagem** | Zod + JSDoc (autodocumentação) |
-| **Backend / API** | Serverless Functions (Netlify/Vercel) ou Node.js/Express (Render + UptimeRobot) |
-| **Banco de Dados** | MongoDB Atlas (M0 Free Tier) |
-| **Armazenamento de Mídia** | Cloudinary API |
+| Camada                     | Tecnologia                                                |
+| -------------------------- | --------------------------------------------------------- |
+| **Frontend**               | React.js (Vite) + TypeScript + Tailwind CSS               |
+| **Validação & Tipagem**    | Zod + JSDoc (autodocumentação)                            |
+| **Backend / API**          | Serverless Functions (**Netlify**) — handler Web standard |
+| **Banco de Dados**         | MongoDB Atlas (M0 Free Tier) — Mongoose                   |
+| **Armazenamento de Mídia** | Cloudinary API                                            |
 
 ### Estrutura de Pastas (Frontend)
 
 ```text
+api/
+└── functions/            # Serverless Functions (ex: health.ts, auth.ts)
 src/
-├── app/                   # Rotas e Serverless Handlers
-│   ├── (public)/          # Landing Page e rotas abertas
-│   ├── admin/             # Área administrativa protegida (/admin/*)
-│   └── api/               # Serverless Endpoints / Actions
-├── features/              # Módulos independentes por funcionalidade
+├── app/                 # Rotas e páginas da aplicação
+│   ├── (public)/        # Landing Page e rotas abertas
+│   ├── admin/           # Área administrativa protegida (/admin/*)
+│   └── api/             # Handlers/Serverless Endpoints
+├── features/            # Módulos independentes por funcionalidade
 │   ├── [feature]/
-│   │   ├── components/    # Componentes de interface do domínio
-│   │   ├── services/      # Chamadas de API e utilitários da feature
-│   │   ├── hooks/         # Custom hooks do domínio
-│   │   └── schemas/       # Validações Zod para formulários
-├── shared/                # Componentes neutros de UI (Button, Input, Modal)
-└── middleware.ts          # Proteção serverless de rotas (/admin/*)
+│   │   ├── components/  # Componentes de interface do domínio
+│   │   ├── services/    # Chamadas de API e utilitários da feature
+│   │   ├── hooks/       # Custom hooks do domínio
+│   │   └── schemas/     # Validações Zod para formulários
+├── shared/              # Código reutilizável (UI, config, database, cloudinary, errors)
+│   ├── components/      # Componentes neutros de UI (Button, Input, Modal)
+│   ├── config/          # env.ts (validação Zod das variáveis de ambiente)
+│   ├── database/        # mongo.ts (conexão Mongoose)
+│   ├── cloudinary/      # upload/delete de mídias
+│   ├── errors/          # AppError e errorHandler
+│   └── styles/          # tokens.css (design tokens)
+└── middleware.ts         # Proteção serverless de rotas (/admin/*)
 ```
 
 ---
@@ -143,9 +151,82 @@ npm run build
 npm run preview
 ```
 
+### Banco de Dados Local (Docker)
+
+Para desenvolvimento sem depender do MongoDB Atlas, suba um MongoDB via Docker Compose:
+
+```bash
+docker compose up -d
+```
+
+O container `catalogo-mongo` fica disponível em `mongodb://localhost:27017`. Defina no `.env`:
+
+```env
+MONGODB_URI=mongodb://localhost:27017/catalogo
+```
+
+O Mongoose cria o banco `catalogo` automaticamente na primeira conexão. Para derrubar: `docker compose down` (mantém os dados por causa do volume `mongo-data`).
+
+### Execução Local com Serverless Functions (Netlify)
+
+As Serverless Functions ficam em `api/functions/` (pasta com nome neutro, configurada no `netlify.toml` via `[functions] directory`), usam Node **20** (definido em `.nvmrc` e `netlify.toml`) e são expostas publicamente nas rotas `/api/*`. Para testá-las localmente, instale a CLI e rode:
+
+```bash
+npm install -g netlify-cli
+netlify dev
+```
+
+A function de health check fica disponível em `http://localhost:8888/api/health` e valida a conexão com o MongoDB.
+
+### Documentação da API (OpenAPI)
+
+A especificação **OpenAPI** é gerada automaticamente a partir dos DTOs Zod:
+
+```bash
+npm run docs:api         # gera docs/openapi.json
+npm run docs:preview     # abre o Swagger UI local (http://localhost:4174)
+```
+
+### Endpoints atuais
+
+| Rota                 | Métodos | Descrição                                                                                                          |
+| -------------------- | ------- | ------------------------------------------------------------------------------------------------------------------ |
+| `/api/health`        | GET     | Status do serviço e da conexão com o banco.                                                                        |
+| `/api/auth/login`    | POST    | Login do admin (`{ email, password }`) → `{ status, data: { token } }`.                                            |
+| `/api/products`      | GET     | Lista produtos públicos (paginação com `page`/`limit`, busca `search` e filtros `category`, `featured`, `active`). |
+| `/api/products`      | POST    | Cria produto (protegido — Bearer token).                                                                           |
+| `/api/products/{id}` | GET     | Detalhe de um produto (público).                                                                                   |
+| `/api/products/{id}` | PUT     | Atualiza produto (protegido — Bearer token).                                                                       |
+| `/api/products/{id}` | DELETE  | Remove produto (protegido — Bearer token).                                                                         |
+| `/api/admins`        | GET     | Lista administradores (somente owner — Bearer token).                                                              |
+| `/api/admins`        | POST    | Cria administrador (`name?`, `email`, `password`, `role?`, `active?` — somente owner).                             |
+| `/api/admins/{id}`   | PUT     | Atualiza administrador / reset de senha (somente owner — Bearer token).                                            |
+| `/api/admins/{id}`   | DELETE  | Remove administrador (somente owner — Bearer token).                                                               |
+| `/api/content`       | GET     | Textos institucionais da landing (hero, benefícios, FAQ, CTA) — público; 404 até cadastrar.                        |
+| `/api/content`       | PUT     | Cria/atualiza os textos institucionais (obj. completo — Bearer token).                                             |
+| `/api/contact`       | GET     | Dados de contato (WhatsApp, e-mail, redes sociais, template de mensagem) — público; 404 até cadastrar.             |
+| `/api/contact`       | PUT     | Cria/atualiza dados de contato (obj. completo — Bearer token).                                                     |
+
+O **primeiro** administrador (papel `owner`) é criado automaticamente na primeira chamada a `/api/auth/login` via seed **condicional**: se o `ADMIN_EMAIL` já existir, nada é sobrescrito (a senha do `.env` deixa de valer após a inicialização). Administradores adicionais (**multi-admin**) são gerenciados via `/api/admins` por uma conta **owner**, com papéis `owner`/`editor` e ativação/desativação instantânea (contas desativadas não autenticam). O `passwordHash` nunca é exposto nas respostas.
+
+### Área Administrativa
+
+O painel fica disponível em `/admin` e usa **React Router + Token JWT** no `localStorage`:
+
+| Rota              | Acesso    | Descrição                                                                    |
+| ----------------- | --------- | ---------------------------------------------------------------------------- |
+| `/admin/login`    | Público   | Tela de login (consome `POST /api/auth/login`).                              |
+| `/admin`          | Protegida | Dashboard com atalhos para as áreas de gestão.                               |
+| `/admin/products` | Protegida | Gestão de produtos: lista (com inativos), criação, edição, ativar/desativar. |
+| `/admin/content`  | Protegida | Textos institucionais e FAQ da landing (em construção).                      |
+| `/admin/contact`  | Protegida | Dados de contato e WhatsApp (em construção).                                 |
+
+Rotas protegidas redirecionam para `/admin/login` quando não há token (e retornam ao destino original após login). Em desenvolvimento local, o Vite (`npm run dev`) encaminha `/api/*` para o `netlify dev` (porta `8888`) via proxy (`vite.config.ts`). No backend, o `GET /api/products` autenticado (Bearer) passa a listar também produtos **inativos** (modo admin); anônimo continua vendo apenas os ativos.
+
 ### Convenção de Commits e Workflow Git
 
 Este projeto utiliza **Conventional Commits** validados automaticamente via Husky e Commitlint.
+
 - **Mensagens de Commit:** Devem seguir o formato `tipo(escopo): descrição` (ex: `feat(admin): cria tela de login`).
 - **Branches:** As alterações devem ser feitas em branches isoladas com a nomenclatura `tipo/numero-issue-descricao` (ex: `feat/1-setup-inicial`).
 
@@ -153,9 +234,16 @@ Este projeto utiliza **Conventional Commits** validados automaticamente via Husk
 
 ## Scripts Disponíveis
 
-| Comando | Descrição |
-| --- | --- |
-| `npm run dev` | Inicia o servidor de desenvolvimento (Vite). |
-| `npm run build` | Compila o TypeScript e gera o bundle de produção. |
-| `npm run lint` | Executa o ESLint no projeto. |
-| `npm run preview` | Serve localmente o bundle de produção gerado. |
+| Comando                | Descrição                                         |
+| ---------------------- | ------------------------------------------------- |
+| `npm run dev`          | Inicia o servidor de desenvolvimento (Vite).      |
+| `npm run build`        | Compila o TypeScript e gera o bundle de produção. |
+| `npm run lint`         | Executa o ESLint no projeto.                      |
+| `npm run lint:fix`     | Executa o ESLint corrigindo problemas.            |
+| `npm run format`       | Formata o código com Prettier.                    |
+| `npm run format:check` | Verifica a formatação sem alterar arquivos.       |
+| `npm run test`         | Executa os testes unitários (Vitest).             |
+| `npm run test:watch`   | Executa os testes em modo watch.                  |
+| `npm run docs:api`     | Gera `docs/openapi.json` a partir dos DTOs Zod.   |
+| `npm run docs:preview` | Abre o Swagger UI local da documentação.          |
+| `npm run preview`      | Serve localmente o bundle de produção gerado.     |

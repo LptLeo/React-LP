@@ -1,0 +1,52 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[functions]
+  directory = "api/functions"
+  node_bundler = "esbuild"
+
+# Rotas da API — proxy para as Serverless Functions (funciona em dev e produção)
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/health"
+  status = 200
+
+[[redirects]]
+  from = "/api/auth/login"
+  to = "/.netlify/functions/auth"
+  status = 200
+
+[[redirects]]
+  from = "/api/products*"
+  to = "/.netlify/functions/products"
+  status = 200
+
+[[redirects]]
+  from = "/api/upload-signature*"
+  to = "/.netlify/functions/upload-signature"
+  status = 200
+
+[[redirects]]
+  from = "/api/admins*"
+  to = "/.netlify/functions/admins"
+  status = 200
+
+[[redirects]]
+  from = "/api/content*"
+  to = "/.netlify/functions/content"
+  status = 200
+
+[[redirects]]
+  from = "/api/contact*"
+  to = "/.netlify/functions/contact"
+  status = 200
+
+# Redireciona rotas SPA (ex: /admin) para o index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
