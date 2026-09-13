@@ -58,7 +58,9 @@ async function getUploadSignature(): Promise<UploadSignature> {
  * @returns Objeto com `url` (secure_url) e `publicId` (public_id).
  * @throws Error - Se o upload falhar (ex: arquivo inválido ou rede).
  */
-export async function uploadProductImage(file: File): Promise<UploadedProductImage> {
+export async function uploadProductImage(
+  file: File,
+): Promise<UploadedProductImage> {
   const signature = await getUploadSignature();
 
   const formData = new FormData();
@@ -81,7 +83,9 @@ export async function uploadProductImage(file: File): Promise<UploadedProductIma
   };
 
   if (!response.ok || !result.secure_url || !result.public_id) {
-    throw new Error(result.error?.message ?? "Não foi possível enviar a imagem.");
+    throw new Error(
+      result.error?.message ?? "Não foi possível enviar a imagem.",
+    );
   }
 
   return { url: result.secure_url, publicId: result.public_id };

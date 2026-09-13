@@ -19,11 +19,19 @@ beforeEach(() => {
   const store = new Map<string, string>();
   vi.stubGlobal("localStorage", {
     getItem: (key: string) => store.get(key) ?? null,
-    setItem: (key: string, value: string) => { store.set(key, value); },
-    removeItem: (key: string) => { store.delete(key); },
-    clear: () => { store.clear(); },
+    setItem: (key: string, value: string) => {
+      store.set(key, value);
+    },
+    removeItem: (key: string) => {
+      store.delete(key);
+    },
+    clear: () => {
+      store.clear();
+    },
     key: () => null,
-    get length() { return store.size; },
+    get length() {
+      return store.size;
+    },
   });
 });
 
@@ -41,13 +49,14 @@ const fakeSignature = {
 /** Resposta simulada do Cloudinary (upload direto bem-sucedido). */
 const fakeUploadResponse = {
   public_id: "products/abc123",
-  secure_url: "https://res.cloudinary.com/demo/image/upload/v1/products/abc123.jpg",
+  secure_url:
+    "https://res.cloudinary.com/demo/image/upload/v1/products/abc123.jpg",
 };
 
 describe("uploadProductImage", () => {
   it("assina, envia direto ao Cloudinary e devolve a imagem persistida", async () => {
     const globalFetch = vi.spyOn(globalThis, "fetch");
-const requestMock = vi.fn<typeof fetch>();
+    const requestMock = vi.fn<typeof fetch>();
 
     // 1ª chamada: assinatura (endpoint das funções Netlify)
     requestMock
@@ -78,7 +87,9 @@ const requestMock = vi.fn<typeof fetch>();
     expect(requestMock.mock.calls[0]?.[0]).toBe("/api/upload-signature");
     // 2ª: destino direto e assinado no Cloudinary
     const directUrl = String(requestMock.mock.calls[1]?.[0]);
-    expect(directUrl).toContain("https://api.cloudinary.com/v1_1/demo/image/upload");
+    expect(directUrl).toContain(
+      "https://api.cloudinary.com/v1_1/demo/image/upload",
+    );
     const directInit = requestMock.mock.calls[1]?.[1] as RequestInit;
     expect(String(directInit.method)).toMatch(/^post$/i);
 
@@ -92,10 +103,10 @@ const requestMock = vi.fn<typeof fetch>();
   it("rejeita propagando a mensagem da API quando a assinatura falha", async () => {
     const globalFetch = vi.spyOn(globalThis, "fetch");
     globalFetch.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({ message: "Não autorizado." }),
-        { status: 401, headers: { "Content-Type": "application/json" } },
-      ),
+      new Response(JSON.stringify({ message: "Não autorizado." }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      }),
     );
 
     const file = new File(["x"], "falha.jpg", { type: "image/jpeg" });

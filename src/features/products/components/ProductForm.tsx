@@ -2,12 +2,7 @@
  * Formulário de criação/edição de produto com validação Zod na borda
  * e upload assinado de imagem para o Cloudinary.
  */
-import {
-  useRef,
-  useState,
-  type ChangeEvent,
-  type FormEvent,
-} from "react";
+import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import {
   productFormSchema,
   type ProductFormValues,
@@ -221,7 +216,7 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
             <button
               type="button"
               onClick={handleImageRemove}
-              className="text-sm text-secondary underline hover:text-danger"
+              className="text-secondary hover:text-danger text-sm underline"
             >
               Remover imagem
             </button>
@@ -233,12 +228,12 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
             <img
               src={form.image.url}
               alt="Prévia da imagem do produto"
-              className="h-16 w-16 rounded-md border border-secondary/30 object-cover"
+              className="border-secondary/30 h-16 w-16 rounded-md border object-cover"
             />
             <button
               type="button"
               onClick={() => imageInputRef.current?.click()}
-              className="text-sm text-primary underline hover:underline-offset-2"
+              className="text-primary text-sm underline hover:underline-offset-2"
             >
               Substituir imagem
             </button>
@@ -270,7 +265,7 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
 
       <fieldset className="flex flex-wrap items-center gap-6">
         <legend className="sr-only">Configurações do produto</legend>
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-text">
+        <label className="text-text flex cursor-pointer items-center gap-2 text-sm">
           <input
             type="checkbox"
             checked={form.featured}
@@ -279,7 +274,7 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
           />
           Em destaque
         </label>
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-text">
+        <label className="text-text flex cursor-pointer items-center gap-2 text-sm">
           <input
             type="checkbox"
             checked={form.active}
